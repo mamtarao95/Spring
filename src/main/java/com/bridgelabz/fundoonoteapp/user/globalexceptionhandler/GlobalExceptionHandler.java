@@ -1,0 +1,56 @@
+package com.bridgelabz.fundoonoteapp.user.globalexceptionhandler;
+
+import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.bridgelabz.fundoonoteapp.user.exceptions.LoginException;
+import com.bridgelabz.fundoonoteapp.user.exceptions.RegisterationException;
+import com.bridgelabz.fundoonoteapp.user.exceptions.UserActivationException;
+import com.bridgelabz.fundoonoteapp.user.models.Response;
+
+@ControllerAdvice
+public class GlobalExceptionHandler  {
+	Response response = new Response();
+
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	/*@ExceptionHandler(Exception.class)
+	public ResponseEntity<Response> genericExceptionhandler(HttpServletRequest request, Exception exception) {
+		logger.info("Generic Exception Occured: URL=" + request.getRequestURL());
+		response.setMessage(exception.getMessage());
+		response.setStatus(0);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}*/
+
+	@ExceptionHandler(RegisterationException.class)
+	public ResponseEntity<Response> registrationExceptionHandler(RegisterationException exception,
+			HttpServletRequest request) {
+		logger.info("Exception encountered at " + request.getRequestURI() + exception.getMessage());
+		response.setMessage(exception.getMessage());
+		response.setStatus(-1);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(LoginException.class)
+	public ResponseEntity<Response> loginExceptionHandler(LoginException exception, HttpServletRequest request) {
+		logger.info("Exception encountered at " + request.getRequestURI() + ":  "+ exception.getMessage());
+		response.setMessage(exception.getMessage());
+		response.setStatus(-2);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(UserActivationException.class)
+	public ResponseEntity<Response> userActivationExceptionHandler(UserActivationException exception, HttpServletRequest request) {
+		logger.info("Exception encountered at " + request.getRequestURI() + ":  "+ exception.getMessage());
+		response.setMessage(exception.getMessage());
+		response.setStatus(-3);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+}
