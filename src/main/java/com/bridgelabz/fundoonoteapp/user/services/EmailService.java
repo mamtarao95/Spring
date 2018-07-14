@@ -1,7 +1,7 @@
 package com.bridgelabz.fundoonoteapp.user.services;
 
-import com.bridgelabz.fundoonoteapp.user.models.User;
+import com.bridgelabz.fundoonoteapp.user.models.EmailDTO;
 
 public interface EmailService {
-	void sendActivationEmail(User user) throws Exception ;
+	void sendActivationEmail(EmailDTO emailDTO) throws Exception ;
 }

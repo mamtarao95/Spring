@@ -4,18 +4,27 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="Users")
+@Document(collection = "Users")
 @EntityScan
 public class User {
-	
+
 	@Id
+	private String id;
 	private String email;
 	private String password;
 	private String firstName;
 	private String lastName;
 	private String mobileNumber;
 	private boolean isActivated;
-	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public boolean isActivated() {
 		return isActivated;
 	}
@@ -64,5 +73,4 @@ public class User {
 		this.mobileNumber = mobileNumber;
 	}
 
-	
 }
