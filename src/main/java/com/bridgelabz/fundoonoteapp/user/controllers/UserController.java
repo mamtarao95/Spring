@@ -61,19 +61,19 @@ public class UserController {
 
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public ResponseEntity<Response> forgotPassword(@RequestBody String email) throws Exception {
-	System.out.println("into fp");
+		System.out.println("into fp");
 		userService.forgotPassword(email);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("An email has been sent successfully to reset your password!!");
 		responseDTO.setStatus(1);
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+		}
 
-	}
-	
 	@RequestMapping(value = "/setpassword", method = RequestMethod.POST)
-	public ResponseEntity<Response> setPassword(@RequestBody SetPasswordDTO setPasswordDTO,@RequestParam("token") String token) throws Exception {
-	System.out.println("into sp");
-		userService.setPassword(setPasswordDTO,token);
+	public ResponseEntity<Response> setPassword(@RequestBody SetPasswordDTO setPasswordDTO,
+			@RequestParam("token") String token) throws Exception {
+		System.out.println("into sp");
+		userService.setPassword(setPasswordDTO, token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("New Password has been set Successfully!!");
 		responseDTO.setStatus(1);

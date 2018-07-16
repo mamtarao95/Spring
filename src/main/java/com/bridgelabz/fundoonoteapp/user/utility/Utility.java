@@ -1,13 +1,9 @@
 package com.bridgelabz.fundoonoteapp.user.utility;
 
 import java.util.Date;
-
 import javax.xml.bind.DatatypeConverter;
-
 import com.bridgelabz.fundoonoteapp.user.exceptions.RegisterationException;
 import com.bridgelabz.fundoonoteapp.user.models.RegistrationDTO;
-import com.google.common.base.Function;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
