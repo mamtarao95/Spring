@@ -14,6 +14,7 @@ import com.bridgelabz.fundoonoteapp.user.models.LoginDTO;
 import com.bridgelabz.fundoonoteapp.user.models.RegistrationDTO;
 import com.bridgelabz.fundoonoteapp.user.models.SetPasswordDTO;
 import com.bridgelabz.fundoonoteapp.user.models.User;
+import com.bridgelabz.fundoonoteapp.user.rabbitmq.ProducerImpl;
 import com.bridgelabz.fundoonoteapp.user.repositories.UserRepository;
 import com.bridgelabz.fundoonoteapp.user.utility.Utility;
 import io.jsonwebtoken.Claims;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ProducerImpl producer;
 
 	@Override
 	public String loginUser(LoginDTO loginDTO) throws LoginException, UserActivationException {
@@ -71,7 +75,8 @@ public class UserServiceImpl implements UserService {
 						+ token);
 		emailDTO.setSubject("Confirm registeration.");
 		emailDTO.setTo(user.getEmail());
-		emailService.sendActivationEmail(emailDTO);
+		producer.produceMessage(emailDTO);
+		//emailService.sendActivationEmail(emailDTO);
 	}
 
 	@Override
@@ -102,7 +107,8 @@ public class UserServiceImpl implements UserService {
 			emailDTO.setMessage(
 					"To reset your password,click the following link : http://localhost:8080/user/setpassword?token="
 							+ token);
-			emailService.sendActivationEmail(emailDTO);
+			producer.produceMessage(emailDTO);
+			//emailService.sendActivationEmail(emailDTO);
 		}
 
 	}

@@ -1,12 +1,14 @@
 package com.bridgelabz.fundoonoteapp.user.interceptor;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
+@Component
 public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequestProcessingTimeInterceptor.class);
@@ -35,7 +37,7 @@ public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter 
 		long startTime = (Long) request.getAttribute("startTime");
 		logger.info("Request URL::" + request.getRequestURL().toString() + ":: End Time=" + System.currentTimeMillis());
 		logger.info("Request URL::" + request.getRequestURL().toString() + ":: Time Taken="
-				+ (System.currentTimeMillis() - startTime)+" ms");
+				+ (System.currentTimeMillis() - startTime) + " ms");
 	}
 
 }
