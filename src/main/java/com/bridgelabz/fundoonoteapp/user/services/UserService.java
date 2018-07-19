@@ -19,6 +19,6 @@ public interface UserService {
 
 	public void forgotPassword(String email) throws Exception;
 
-	public void setPassword(SetPasswordDTO setPasswordDTO,String token) throws ForgotPasswordException;
+	void resetPassword(SetPasswordDTO setPasswordDTO, String token) throws ForgotPasswordException;
 
 }

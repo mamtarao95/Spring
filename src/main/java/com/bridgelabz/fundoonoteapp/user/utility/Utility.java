@@ -1,9 +1,16 @@
 package com.bridgelabz.fundoonoteapp.user.utility;
 
 import java.util.Date;
+
+import javax.security.auth.login.LoginException;
 import javax.xml.bind.DatatypeConverter;
+
+import com.bridgelabz.fundoonoteapp.user.exceptions.ForgotPasswordException;
 import com.bridgelabz.fundoonoteapp.user.exceptions.RegisterationException;
+import com.bridgelabz.fundoonoteapp.user.models.LoginDTO;
 import com.bridgelabz.fundoonoteapp.user.models.RegistrationDTO;
+import com.bridgelabz.fundoonoteapp.user.models.SetPasswordDTO;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -14,9 +21,15 @@ public class Utility {
 	private Utility() {
 	}
 
-	final static String SECRET = "mamta";
+	private final static String SECRET = "mamta";
 
 	public static void validateUserInformation(RegistrationDTO registrationDTO) throws RegisterationException {
+
+		if (registrationDTO.getEmail() == null || registrationDTO.getPassword() == null
+				|| registrationDTO.getConfirmPassword() == null || registrationDTO.getFirstName() == null
+				|| registrationDTO.getLastName() == null || registrationDTO.getMobileNumber() == null) {
+			throw new RegisterationException("Fields cannot be null.All fields are mandatory.");
+		}
 
 		if (!validateEmail(registrationDTO.getEmail())) {
 			throw new RegisterationException("Invalid Email-id");
@@ -71,4 +84,26 @@ public class Utility {
 		return expiration.before(new Date());
 	}
 
+	public static void loginValidation(LoginDTO loginDTO) throws LoginException {
+		if (loginDTO.getEmail() == null || loginDTO.getEmail() == "") {
+			throw new LoginException("EmailID field cannot be empty");
+
+		}
+		if (loginDTO.getPassword() == null || loginDTO.getPassword() == "") {
+			throw new LoginException("Password field cannot be empty");
+		}
+	}
+
+	public static void resetPasswordValidation(SetPasswordDTO setPasswordDTO) throws ForgotPasswordException {
+		if (setPasswordDTO.getNewPassword() == null || setPasswordDTO.getNewPassword() == "") {
+			throw new ForgotPasswordException("New Password field cannot be empty");
+		}
+		if (setPasswordDTO.getConfirmPassword() == null || setPasswordDTO.getConfirmPassword() == "") {
+			throw new ForgotPasswordException("Confirm Password field cannot be empty");
+		}
+		if (!setPasswordDTO.getConfirmPassword().equals(setPasswordDTO.getNewPassword())) {
+			throw new ForgotPasswordException("New password and confirm password does not matches!!");
+		}
+
+	}
 }

@@ -3,8 +3,9 @@ package com.bridgelabz.fundoonoteapp.user.security;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.bridgelabz.fundoonoteapp.user.interceptor.LoggerInterceptor;
-import com.bridgelabz.fundoonoteapp.user.interceptor.RequestProcessingTimeInterceptor;
+
+import com.bridgelabz.fundoonoteapp.user.interceptors.LoggerInterceptor;
+import com.bridgelabz.fundoonoteapp.user.interceptors.RequestProcessingTimeInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

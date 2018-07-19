@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonoteapp.user.interceptor;
+package com.bridgelabz.fundoonoteapp.user.interceptors;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

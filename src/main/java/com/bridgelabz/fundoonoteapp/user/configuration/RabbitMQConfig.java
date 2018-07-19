@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonoteapp.user.rabbitmq;
+package com.bridgelabz.fundoonoteapp.user.configuration;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;

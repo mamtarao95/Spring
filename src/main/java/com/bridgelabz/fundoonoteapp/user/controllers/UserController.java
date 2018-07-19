@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +20,7 @@ import com.bridgelabz.fundoonoteapp.user.models.SetPasswordDTO;
 import com.bridgelabz.fundoonoteapp.user.services.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
 	@Autowired
@@ -38,7 +40,6 @@ public class UserController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<Response> registerUser(@RequestBody RegistrationDTO registrationDto) throws Exception {
-		System.out.println("into reg");
 		userService.registerUser(registrationDto);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Registeration Successfull!!");
@@ -50,14 +51,14 @@ public class UserController {
 	@RequestMapping(value = "/activateaccount", method = RequestMethod.GET)
 	public ResponseEntity<Response> activateAccount(@RequestParam("token") String token)
 			throws UserActivationException {
-		System.out.println("into activation controller");
 		System.out.println("token: " + token);
 		userService.activateAccount(token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("account activated Successfull!!");
-		responseDTO.setStatus(1);
+		responseDTO.setStatus(3);
 		return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
 	}
+	
 
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public ResponseEntity<Response> forgotPassword(@RequestBody String email) throws Exception {
@@ -65,20 +66,20 @@ public class UserController {
 		userService.forgotPassword(email);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("An email has been sent successfully to reset your password!!");
-		responseDTO.setStatus(1);
+		responseDTO.setStatus(4);
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 		}
 
 	@RequestMapping(value = "/setpassword", method = RequestMethod.POST)
-	public ResponseEntity<Response> setPassword(@RequestBody SetPasswordDTO setPasswordDTO,
+	public ResponseEntity<Response> resetPassword(@RequestBody SetPasswordDTO setPasswordDTO,
 			@RequestParam("token") String token) throws Exception {
-		System.out.println("into sp");
-		userService.setPassword(setPasswordDTO, token);
+		userService.resetPassword(setPasswordDTO, token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("New Password has been set Successfully!!");
-		responseDTO.setStatus(1);
+		responseDTO.setStatus(5);
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
 	}
+	
 
 }

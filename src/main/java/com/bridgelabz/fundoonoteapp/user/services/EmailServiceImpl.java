@@ -25,6 +25,7 @@ public class EmailServiceImpl implements EmailService {
 		helper.setSubject(emailDTO.getSubject());
 		helper.setText(emailDTO.getMessage());
 		emailSender.send(message);
+		
 
 	}
 

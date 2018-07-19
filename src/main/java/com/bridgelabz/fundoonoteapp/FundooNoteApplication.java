@@ -8,5 +8,8 @@ public class FundooNoteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FundooNoteApplication.class, args);
+		
 	}
 }
+
+

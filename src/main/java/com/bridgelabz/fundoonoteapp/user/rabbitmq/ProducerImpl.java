@@ -21,7 +21,7 @@ public class ProducerImpl {
 	
 	public void produceMessage(EmailDTO emailDTO){
 		rabbitTemplate.convertAndSend(exchange, routingKey, emailDTO);
-		System.out.println("Send msg = ");
+		System.out.println("Send msg");
 	}
 	
 	

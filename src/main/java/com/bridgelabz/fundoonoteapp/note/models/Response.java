@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonoteapp.user.models;
+package com.bridgelabz.fundoonoteapp.note.models;
 
 public class Response {
 

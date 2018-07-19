@@ -1,7 +1,10 @@
 package com.bridgelabz.fundoonoteapp.user.services;
 
 import java.util.Optional;
+
 import javax.security.auth.login.LoginException;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import com.bridgelabz.fundoonoteapp.user.models.User;
 import com.bridgelabz.fundoonoteapp.user.rabbitmq.ProducerImpl;
 import com.bridgelabz.fundoonoteapp.user.repositories.UserRepository;
 import com.bridgelabz.fundoonoteapp.user.utility.Utility;
+import org.springframework.core.env.Environment;
+
 import io.jsonwebtoken.Claims;
 
 @Service
@@ -30,13 +35,22 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private ProducerImpl producer;
+	
+	@Autowired
+	ModelMapper modelMapper;
+	
+	@Autowired
+	private Environment env;
+	
 
 	@Override
 	public String loginUser(LoginDTO loginDTO) throws LoginException, UserActivationException {
-
+		
+		Utility.loginValidation(loginDTO);
+		
 		Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
 		if (!optionalUser.isPresent()) {
 			throw new LoginException("User is not present");
@@ -52,31 +66,28 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void registerUser(RegistrationDTO registrationDTO) throws Exception {
+
+		
 		Utility.validateUserInformation(registrationDTO);
+
 		Optional<User> optionalUser = userRepository.findByEmail(registrationDTO.getEmail());
 		if (optionalUser.isPresent()) {
 			System.out.println("user present");
 			throw new RegisterationException("User with same email-id already exists!!");
 		}
 
-		User user = new User();
-		user.setFirstName(registrationDTO.getFirstName());
-		user.setLastName(registrationDTO.getLastName());
-		user.setEmail(registrationDTO.getEmail());
+		User user=modelMapper.map(registrationDTO, User.class);
 		user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
-		user.setMobileNumber(registrationDTO.getMobileNumber());
 		userRepository.save(user);
+
 		Optional<User> optionalUser1 = userRepository.findByEmail(user.getEmail());
 
 		String token = Utility.tokenGenerator(optionalUser1.get().getId());
 		EmailDTO emailDTO = new EmailDTO();
-		emailDTO.setMessage(
-				"To activate your account, click the following link : http://localhost:8080/user/activateaccount?token="
-						+ token);
-		emailDTO.setSubject("Confirm registeration.");
+		emailDTO.setMessage(env.getProperty("activation.subject")+ token);
+		emailDTO.setSubject(env.getProperty("activation.link"));
 		emailDTO.setTo(user.getEmail());
 		producer.produceMessage(emailDTO);
-		//emailService.sendActivationEmail(emailDTO);
 	}
 
 	@Override
@@ -92,32 +103,26 @@ public class UserServiceImpl implements UserService {
 		User user = optionalUser.get();
 		user.setActivated(true);
 		userRepository.save(user);
-		System.out.println("user set to true");
-
 	}
 
 	@Override
 	public void forgotPassword(String email) throws Exception {
 		Optional<User> optionalUser = userRepository.findByEmail(email);
-		if (optionalUser.isPresent()) {
-			String token = Utility.tokenGenerator(optionalUser.get().getId());
-			EmailDTO emailDTO = new EmailDTO();
-			emailDTO.setTo(email);
-			emailDTO.setSubject("Forgot Password Link");
-			emailDTO.setMessage(
-					"To reset your password,click the following link : http://localhost:8080/user/setpassword?token="
-							+ token);
-			producer.produceMessage(emailDTO);
-			//emailService.sendActivationEmail(emailDTO);
+		if (!optionalUser.isPresent()) {
+			throw new UserActivationException("Email id doesn't exists");
 		}
-
+		String token = Utility.tokenGenerator(optionalUser.get().getId());
+		EmailDTO emailDTO = new EmailDTO();
+		emailDTO.setTo(email);
+		emailDTO.setSubject(env.getProperty("forgotpassword.subject"));
+		emailDTO.setMessage(env.getProperty("forgotpassword.link")+ token);
+		producer.produceMessage(emailDTO);
 	}
 
 	@Override
-	public void setPassword(SetPasswordDTO setPasswordDTO, String token) throws ForgotPasswordException {
-		if (!setPasswordDTO.getConfirmPassword().equals(setPasswordDTO.getNewPassword())) {
-			throw new ForgotPasswordException("New password and confirm password does not matches!!");
-		}
+	public void resetPassword(SetPasswordDTO setPasswordDTO, String token) throws ForgotPasswordException {
+		Utility.resetPasswordValidation(setPasswordDTO);
+		
 		Claims claims = Utility.parseJWT(token);
 		Optional<User> optionalUser = userRepository.findById(claims.getId());
 		if (!optionalUser.isPresent()) {
@@ -128,5 +133,7 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 
 	}
+
+
 
 }

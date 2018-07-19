@@ -19,21 +19,24 @@ import com.bridgelabz.fundoonoteapp.user.models.Response;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-	Response response = new Response();
+
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
-	  @ExceptionHandler(Exception.class) public ResponseEntity<Response>
+	 @ExceptionHandler(Exception.class) public ResponseEntity<Response>
 	  genericExceptionhandler(HttpServletRequest request, Exception exception) {
 	  logger.info("Generic Exception Occured: URL=" + request.getRequestURL());
-	  response.setMessage(exception.getMessage()); response.setStatus(0); return
-	 new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); }
+	  Response response = new Response();
+	  response.setMessage(exception.getMessage()); response.setStatus(0);
+	  return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); 
+	  }
 	 
 
 	@ExceptionHandler(RegisterationException.class)
 	public ResponseEntity<Response> registrationExceptionHandler(RegisterationException exception,
 			HttpServletRequest request) {
 		logger.info("Exception encountered at " + request.getRequestURI() + exception.getMessage());
+		Response response = new Response();
 		response.setMessage(exception.getMessage());
 		response.setStatus(-1);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -42,6 +45,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(LoginException.class)
 	public ResponseEntity<Response> loginExceptionHandler(LoginException exception, HttpServletRequest request) {
 		logger.info("Exception encountered at " + request.getRequestURI() + ":  " + exception.getMessage());
+		Response response = new Response();
 		response.setMessage(exception.getMessage());
 		response.setStatus(-2);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -51,6 +55,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Response> userActivationExceptionHandler(UserActivationException exception,
 			HttpServletRequest request) {
 		logger.info("Exception encountered at " + request.getRequestURI() + ":  " + exception.getMessage());
+		Response response = new Response();
 		response.setMessage(exception.getMessage());
 		response.setStatus(-3);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -60,6 +65,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Response> forgotPasswordExceptionHandler(ForgotPasswordException exception,
 			HttpServletRequest request) {
 		logger.info("Exception occured at " + request.getRequestURI() + ": " + exception.getMessage());
+		Response response = new Response();
 		response.setMessage(exception.getMessage());
 		response.setStatus(-4);
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
