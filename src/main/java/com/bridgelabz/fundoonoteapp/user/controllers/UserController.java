@@ -33,7 +33,7 @@ public class UserController {
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Login Successfull!!");
 		responseDTO.setStatus(2);
-		res.setHeader("jwt", token);
+		res.setHeader("token", token);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
 	}

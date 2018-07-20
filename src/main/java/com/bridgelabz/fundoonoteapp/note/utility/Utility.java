@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
-import com.bridgelabz.fundoonoteapp.note.exceptions.NoteException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
 
@@ -34,15 +34,15 @@ public class Utility {
 		return true;
 		}
 	
-	public static void validateCreateDTO(CreateNoteDTO createNoteDTO) throws NoteException {
+	public static void validateCreateDTO(CreateNoteDTO createNoteDTO) throws NoteNotFoundException {
 		if(createNoteDTO.getDescription()=="" || createNoteDTO.getTitle()=="") {
-			throw new NoteException("Fields cannot be empty");
+			throw new NoteNotFoundException("Fields cannot be empty");
 		}
 	}
 	
-	public static void validateUpdateDTO(UpdateNoteDTO updateNoteDTO) throws NoteException {
+	public static void validateUpdateDTO(UpdateNoteDTO updateNoteDTO) throws NoteNotFoundException {
 		if(updateNoteDTO.getDescription()=="" || updateNoteDTO.getTitle()=="") {
-			throw new NoteException("Fields cannot be empty");
+			throw new NoteNotFoundException("Fields cannot be empty");
 		}
 	}
 

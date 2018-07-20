@@ -14,7 +14,15 @@ public interface NoteRespository extends MongoRepository<Note, String> {
 
 	Note findByUserIdAndNoteId(String UserId, String noteId);
 
-	List<ViewNoteDTO> findAllByUserId(String userId);
-
 	Long deleteNoteByIsTrashed(boolean trashed);
+
+	void save(Optional<Note> note);
+
+	void deleteNoteByIsTrashedAndUserId(boolean b, String id);
+
+	Optional<Note> findOneByUserId(String userId);
+
+	List<ViewNoteDTO> findAllByUserIdAndIsTrashed(String id, boolean b);
+
+
 }

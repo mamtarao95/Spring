@@ -19,8 +19,14 @@ public class Note implements Serializable {
 	private Date updatedAt;
 	private Date reminder;
 	private boolean isTrashed;
-	
-	
+	private String color;
+		
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
 	public String getNoteId() {
 		return noteId;
 	}

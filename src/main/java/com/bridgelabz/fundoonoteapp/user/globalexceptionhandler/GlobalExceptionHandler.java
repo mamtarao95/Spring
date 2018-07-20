@@ -23,13 +23,13 @@ public class GlobalExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
-	 @ExceptionHandler(Exception.class) public ResponseEntity<Response>
+	 /*@ExceptionHandler(Exception.class) public ResponseEntity<Response>
 	  genericExceptionhandler(HttpServletRequest request, Exception exception) {
 	  logger.info("Generic Exception Occured: URL=" + request.getRequestURL());
 	  Response response = new Response();
 	  response.setMessage(exception.getMessage()); response.setStatus(0);
 	  return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); 
-	  }
+	  }*/
 	 
 
 	@ExceptionHandler(RegisterationException.class)

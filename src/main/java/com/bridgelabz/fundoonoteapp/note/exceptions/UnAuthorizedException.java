@@ -1,10 +1,10 @@
 package com.bridgelabz.fundoonoteapp.note.exceptions;
 
-public class NoteException extends Exception {
-	
+public class UnAuthorizedException extends Exception {
+
 	private static final long serialVersionUID = 1L;
 
-	public NoteException(String message) {
+	public UnAuthorizedException(String message) {
 		super(message);
 	}
 

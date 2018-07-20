@@ -1,19 +1,26 @@
 package com.bridgelabz.fundoonoteapp.note.controllers;
 
 import java.util.Date;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.bridgelabz.fundoonoteapp.note.exceptions.NoteException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
+import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.ViewNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.services.NoteService;
@@ -27,17 +34,14 @@ public class NoteController {
 	private NoteService noteService;
 
 	@PostMapping("/createnote")
-	public ResponseEntity<Response> createNote(@RequestBody CreateNoteDTO createNoteDTO, @RequestParam("token") String token) throws NoteException {
-		noteService.createNote(createNoteDTO, token);
-		Response responseDTO = new Response();
-		responseDTO.setMessage("Note created Successfully!!");
-		responseDTO.setStatus(1);
-		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+	public ResponseEntity<Note> createNote(@RequestBody CreateNoteDTO createNoteDTO,HttpServletRequest request,HttpServletResponse response,@RequestParam String token) throws NoteNotFoundException, UnAuthorizedException {
+		Note note=noteService.createNote(createNoteDTO,token);
+		return new ResponseEntity<>(note, HttpStatus.CREATED);
 
 	}
 
-	@DeleteMapping("/deletenote")
-	public ResponseEntity<Response> deleteNote(@RequestParam String token,@RequestParam String noteId) throws NoteException {
+	@DeleteMapping("/deletenote/{noteId}")
+	public ResponseEntity<Response> deleteNote(@RequestParam String token,@PathVariable String noteId) throws NoteNotFoundException, UnAuthorizedException {
 		noteService.trashNote(token, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Note trashed Successfully!!");
@@ -45,10 +49,9 @@ public class NoteController {
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
-	@PostMapping("/updatenote")
-	public ResponseEntity<Response> updateNote(@RequestBody UpdateNoteDTO updateNoteDTO, @RequestParam String token,
-			String noteId) throws NoteException {
-		noteService.updateNote(updateNoteDTO, token, noteId);
+	@PostMapping("/updatenote/{noteId}")
+	public ResponseEntity<Response> updateNote(@RequestBody UpdateNoteDTO updateNoteDTO, @RequestParam String token) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.updateNote(updateNoteDTO, token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Updated Note Successfull!!");
 		responseDTO.setStatus(3);
@@ -56,15 +59,15 @@ public class NoteController {
 
 	}
 
-	@GetMapping("/viewnote")
-	public ResponseEntity<ViewNoteDTO> viewNote(@RequestParam String noteId) throws NoteException {
-		return new ResponseEntity<>(noteService.viewNote(noteId), HttpStatus.OK);
+	@GetMapping("/viewnote/{noteId}")
+	public ResponseEntity<ViewNoteDTO> viewNote(@PathVariable String noteId,@RequestParam String token) throws NoteNotFoundException, UnAuthorizedException {
+		return new ResponseEntity<>(noteService.viewNote(noteId,token), HttpStatus.OK);
 		}
 
-	@DeleteMapping("/deleteTrashedNote")
-	public ResponseEntity<Response> deleteTrashedNote(@RequestParam String noteId)
-			throws NoteException {
-		noteService.deletetrashedNote(noteId);
+	@DeleteMapping("/deleteTrashedNote/{noteId}")
+	public ResponseEntity<Response> deleteTrashedNote(@PathVariable String noteId,@RequestParam String token)
+			throws NoteNotFoundException, UnAuthorizedException {
+		noteService.deletetrashedNote(noteId,token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Deleted trashed Note Successfully!!");
 		responseDTO.setStatus(4);
@@ -73,8 +76,8 @@ public class NoteController {
 	}
 
 	@DeleteMapping("/emptyTrash")
-	public ResponseEntity<Response> emptyTrash(HttpServletResponse response) throws NoteException {
-		noteService.emptyTrash();
+	public ResponseEntity<Response> emptyTrash(HttpServletResponse response,@RequestParam String token) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.emptyTrash(token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Trash is emptied Successfully!!");
 		responseDTO.setStatus(5);
@@ -82,8 +85,8 @@ public class NoteController {
 
 	}
 
-	@PostMapping("/removereminder")
-	public ResponseEntity<Response> removeRemainder(@RequestParam String noteId, String token) throws NoteException {
+	@PostMapping("/removereminder/{noteId}")
+	public ResponseEntity<Response> removeRemainder(@PathVariable String noteId,@RequestParam String token) throws NoteNotFoundException, UnAuthorizedException {
 		noteService.removeRemiander(noteId, token);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Reminder removed Successfully!!");
@@ -92,9 +95,9 @@ public class NoteController {
 
 	}
 
-	@PostMapping("/addreminder")
-	public ResponseEntity<Response> addReminder(@RequestParam String noteId, String token, @RequestBody Date reminder)
-			throws NoteException {
+	@PostMapping("/addreminder/{noteId}")
+	public ResponseEntity<Response> addReminder(@PathVariable String noteId, @RequestParam String token, @RequestBody Date reminder)
+			throws NoteNotFoundException, UnAuthorizedException {
 		noteService.addReminder(noteId, token, reminder);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Reminder added Successfully!!");
@@ -105,7 +108,7 @@ public class NoteController {
 	
 	@GetMapping("/viewAll")
 	public Iterable<ViewNoteDTO> viewAllNotes(@RequestParam String token)
-			throws NoteException {
+			throws NoteNotFoundException {
 		return noteService.viewAllNotes(token);
 	
 	}
