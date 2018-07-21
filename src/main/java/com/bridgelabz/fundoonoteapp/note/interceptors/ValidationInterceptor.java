@@ -22,9 +22,9 @@ public class ValidationInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		logger.info("Before handling the request with request url: " + request.getRequestURI());
-		System.out.println(request.getHeader("token")+ " ..................");
-		Claims claims=Utility.parseJWT(response.getHeader("token"));
-		request.setAttribute("userId", claims.getId());
+		String token=request.getHeader("token");
+		Claims claims=Utility.parseJWT(token);
+		request.setAttribute("userId",claims.getId());
 		return true;
 	}
 	

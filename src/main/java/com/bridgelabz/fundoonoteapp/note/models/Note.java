@@ -20,7 +20,22 @@ public class Note implements Serializable {
 	private Date reminder;
 	private boolean isTrashed;
 	private String color;
-		
+	private boolean isPin;
+	private boolean isArchive;
+
+	
+	public boolean isPin() {
+		return isPin;
+	}
+	public void setPin(boolean isPin) {
+		this.isPin = isPin;
+	}
+	public boolean isArchive() {
+		return isArchive;
+	}
+	public void setArchive(boolean isArchive) {
+		this.isArchive = isArchive;
+	}
 	public String getColor() {
 		return color;
 	}

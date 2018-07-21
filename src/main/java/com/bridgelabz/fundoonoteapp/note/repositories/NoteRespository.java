@@ -22,7 +22,7 @@ public interface NoteRespository extends MongoRepository<Note, String> {
 
 	Optional<Note> findOneByUserId(String userId);
 
-	List<ViewNoteDTO> findAllByUserIdAndIsTrashed(String id, boolean b);
+	List<Note> findAllByUserIdAndIsTrashed(String id, boolean b);
 
 
 }

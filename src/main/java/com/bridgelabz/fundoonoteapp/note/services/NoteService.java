@@ -5,19 +5,20 @@ import java.util.List;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.ViewNoteDTO;
 
 public interface NoteService {
 
-	Note createNote(CreateNoteDTO createNoteDTO, String userId) throws NoteNotFoundException, UnAuthorizedException;
+	ViewNoteDTO createNote(CreateNoteDTO createNoteDTO, String userId)
+			throws NoteNotFoundException, UnAuthorizedException;
 
 	void emptyTrash(String token) throws NoteNotFoundException, UnAuthorizedException;
 
 	void updateNote(UpdateNoteDTO updateNoteDTO, String token) throws NoteNotFoundException, UnAuthorizedException;
 
-	void deletetrashedNote(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
+	void deleteOrRestoreTrashedNote(String noteId, String token, boolean input)
+			throws NoteNotFoundException, UnAuthorizedException;
 
 	void trashNote(String token, String noteId) throws NoteNotFoundException, UnAuthorizedException;
 
@@ -29,7 +30,8 @@ public interface NoteService {
 
 	List<ViewNoteDTO> viewAllNotes(String token) throws NoteNotFoundException;
 
+	Iterable<ViewNoteDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException;
 
-	/* void validateNoteAndUser(String noteId, String userId) throws UnAuthorizedException, NoteNotFoundException;*/
+	Iterable<ViewNoteDTO> geArchiveNotes(String userId);
 
 }

@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonoteapp.user.security;
+package com.bridgelabz.fundoonoteapp.user.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
