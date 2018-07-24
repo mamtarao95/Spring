@@ -18,6 +18,16 @@ public class CreateNoteDTO {
 
 	private boolean isArchive;
 
+	private String label; 
+	
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public boolean isPin() {
 		return isPin;
 	}
@@ -84,6 +94,17 @@ public class CreateNoteDTO {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public CreateNoteDTO(String title, String description, String color, Date reminder, boolean isPin,
+			boolean isArchive) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.color = color;
+		this.reminder = reminder;
+		this.isPin = isPin;
+		this.isArchive = isArchive;
 	}
 
 }

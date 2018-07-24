@@ -7,12 +7,17 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
+import com.bridgelabz.fundoonoteapp.note.models.Label;
+import com.bridgelabz.fundoonoteapp.note.models.LabelViewDTO;
 import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.ViewNoteDTO;
+import com.bridgelabz.fundoonoteapp.note.models.NoteViewDTO;
+import com.bridgelabz.fundoonoteapp.note.repositories.LabelRepository;
 import com.bridgelabz.fundoonoteapp.note.repositories.NoteRespository;
 import com.bridgelabz.fundoonoteapp.note.utility.Utility;
 import com.bridgelabz.fundoonoteapp.user.repositories.UserRepository;
@@ -29,19 +34,32 @@ public class NoteServiceImpl implements NoteService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	LabelRepository labelRepository;
+
 	@Override
-	public ViewNoteDTO createNote(CreateNoteDTO createNoteDTO, String userId)
-			throws UnAuthorizedException, NoteNotFoundException {
+	public NoteViewDTO createNote(CreateNoteDTO createNoteDTO, String userId)
+			throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException {
+
 		Utility.validateCreateDTO(createNoteDTO);
+
 		if (!userRepository.findById(userId).isPresent()) {
 			throw new UnAuthorizedException("User not found");
 		}
+
 		Note note = modelMapper.map(createNoteDTO, Note.class);
+		/*
+		 * if (createNoteDTO.getLabel() != null) { LabelViewDTO labelViewDTO =
+		 * createLabel(createNoteDTO.getLabel(), userId); List<Label> labelList = new
+		 * ArrayList<>(); labelList.add(modelMapper.map(labelViewDTO, Label.class));
+		 * note.setLabelList(labelList); System.out.println(note.getLabelList().get(0));
+		 * }
+		 */
 		note.setCreatedAt(new Date());
 		note.setUpdatedAt(new Date());
 		note.setUserId(userId);
 		noteRespository.save(note);
-		return modelMapper.map(note, ViewNoteDTO.class);
+		return modelMapper.map(note, NoteViewDTO.class);
 	}
 
 	@Override
@@ -68,21 +86,21 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public void deleteOrRestoreTrashedNote(String noteId, String userId,boolean isdelete) throws NoteNotFoundException, UnAuthorizedException {
+	public void deleteOrRestoreTrashedNote(String noteId, String userId, boolean isdelete)
+			throws NoteNotFoundException, UnAuthorizedException {
 		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
-		
+
 		if (!optionalNote.get().isTrashed()) {
 			throw new NoteNotFoundException("Note is not trashed yet");
 		}
-		if(isdelete) {
+		if (isdelete) {
 			noteRespository.deleteById(noteId);
-		}
-		else {
-			Note note=optionalNote.get();
+		} else {
+			Note note = optionalNote.get();
 			note.setTrashed(false);
 			noteRespository.save(note);
 		}
-		
+
 	}
 
 	@Override
@@ -114,30 +132,27 @@ public class NoteServiceImpl implements NoteService {
 
 	}
 
-
-
 	@Override
-	public ViewNoteDTO viewNote(String noteId, String userId) throws NoteNotFoundException, UnAuthorizedException {
+	public NoteViewDTO viewNote(String noteId, String userId) throws NoteNotFoundException, UnAuthorizedException {
 		Optional<Note> note = validateNoteAndUser(noteId, userId);
 		if (note.get().isTrashed()) {
 			throw new NoteNotFoundException(
 					"Note with given id could not be found or note you are looking for might have been trashed");
 		}
-		return modelMapper.map(note.get(), ViewNoteDTO.class);
+		return modelMapper.map(note.get(), NoteViewDTO.class);
 
 	}
 
 	@Override
-	public List<ViewNoteDTO> viewAllNotes(String userId) throws NoteNotFoundException {
+	public List<NoteViewDTO> viewAllNotes(String userId) throws NoteNotFoundException {
 		List<Note> note = noteRespository.findAllByUserIdAndIsTrashed(userId, false);
 		if (note.isEmpty()) {
 			throw new NoteNotFoundException("Notes are not available.kindly create note");
 		}
-		List<ViewNoteDTO> noteList = new ArrayList<>();
+		List<NoteViewDTO> noteList = new ArrayList<>();
 		for (int i = 0; i < note.size(); i++) {
-			noteList.add(modelMapper.map(note.get(i), ViewNoteDTO.class));
+			noteList.add(modelMapper.map(note.get(i), NoteViewDTO.class));
 		}
-
 		return noteList;
 	}
 
@@ -159,23 +174,172 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public Iterable<ViewNoteDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException {
-		List<Note> note = noteRespository.findAllByUserIdAndIsTrashed(userId,true);
+	public Iterable<NoteViewDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException {
+		List<Note> note = noteRespository.findAllByUserIdAndIsTrashed(userId, true);
 		if (note.isEmpty()) {
 			throw new NoteNotFoundException("Notes are not available in trash");
 		}
-		List<ViewNoteDTO> noteList = new ArrayList<>();
+		List<NoteViewDTO> noteList = new ArrayList<>();
 		for (int i = 0; i < note.size(); i++) {
-			noteList.add(modelMapper.map(note.get(i), ViewNoteDTO.class));
+			noteList.add(modelMapper.map(note.get(i), NoteViewDTO.class));
 		}
 		return noteList;
 	}
 
 	@Override
-	public Iterable<ViewNoteDTO> geArchiveNotes(String userId) {
+	public Iterable<NoteViewDTO> getArchiveNotes(String userId) throws NoteNotFoundException {
+		List<Note> note = noteRespository.findAllByUserIdAndIsArchive(userId, true);
+		if (note.isEmpty()) {
+			throw new NoteNotFoundException("Notes are not available");
+		}
+		List<NoteViewDTO> noteList = new ArrayList<>();
+		for (int i = 0; i < note.size(); i++) {
+			noteList.add(modelMapper.map(note.get(i), NoteViewDTO.class));
+		}
+		return noteList;
+
+	}
+
+	@Override
+	public void setArchive(String userId, String noteId) throws NoteNotFoundException, UnAuthorizedException {
+		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+		Note note = optionalNote.get();
+		note.setArchive(true);
+		noteRespository.save(note);
+
+	}
+
+	@Override
+	public void unArchive(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException {
+		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+		Note note = optionalNote.get();
+		note.setArchive(false);
+		noteRespository.save(note);
+	}
+
+	@Override
+	public void pinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException {
+		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+		Note note = optionalNote.get();
+		note.setPin(true);
+		noteRespository.save(note);
+	}
+
+	@Override
+	public void unPinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException {
+		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+		Note note = optionalNote.get();
+		note.setPin(false);
+		noteRespository.save(note);
+
+	}
+
+	@Override
+	public List<LabelViewDTO> getLabels(String userId) throws LabelNotFoundException {
+		List<Label> labelList = labelRepository.findAllByUserId(userId);
+		if (labelList.isEmpty()) {
+			throw new LabelNotFoundException("Labels are not available");
+		}
+		List<LabelViewDTO> labelListView = new ArrayList<>();
+		for (int i = 0; i < labelList.size(); i++) {
+			labelListView.add(modelMapper.map(labelList.get(i), LabelViewDTO.class));
+		}
+		return labelListView;
+	}
+
+	@Override
+	public LabelViewDTO createLabel(String labelName, String userId)
+			throws UnAuthorizedException, LabelNotFoundException {
+		if (!userRepository.findById(userId).isPresent()) {
+			throw new UnAuthorizedException("User not found");
+		}
+		Label labelFound = labelRepository.findByLabelNameAndUserId(labelName, userId);
+		if (labelFound != null) {
+			return modelMapper.map(labelFound, LabelViewDTO.class);
+		}
+		Label label = new Label();
+		label.setLabelName(labelName);
+		label.setUserId(userId);
+		labelRepository.save(label);
+		return modelMapper.map(label, LabelViewDTO.class);
+
+	}
+
+	@Override
+	public void deleteLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException {
+		if (!userRepository.findById(userId).isPresent()) {
+			throw new UnAuthorizedException("User not found");
+		}
+		Label labelFound = labelRepository.findByLabelNameAndUserId(labelName, userId);
+		if (labelFound == null) {
+			throw new LabelNotFoundException("Label not found");
+		}
 		
+		Label label=noteRespository.findByQuery(userId, labelName);
+		System.out.println(label.getLabelName());
+		/*
+		 * List<String> noteIds=labelFound.getNoteId(); for(int i=0 ;i <
+		 * noteIds.size();i++) {
+		 * noteRespository.findByUserIdAndNoteId(userId,noteIds.get(i)); }
+		 * 
+		 * labelRepository.delete(labelFound);
+		 */
+		//labelRepository.delete(labelFound);
+
+	}
+
+	@Override
+	public LabelViewDTO renameLabel(String labelName, String userId) {
+
 		return null;
 	}
 
+	@Override
+	public Iterable<LabelViewDTO> getNotesOfLabel(String labelName, String userId)
+			throws UnAuthorizedException, LabelNotFoundException {
+		if (!userRepository.findById(userId).isPresent()) {
+			throw new UnAuthorizedException("User not found");
+		}
+		Label labelFound = labelRepository.findByLabelNameAndUserId(labelName, userId);
+		if (labelFound == null) {
+			throw new LabelNotFoundException("Label not found");
+		}
+		//return noteRespository.findByUserIdAndLabelListLabelName(userId, labelName);
+		return null;
 
+	}
+
+	@Override
+	public void addLabel(String labelName, String userId, String noteId)
+			throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException {
+		Optional<Note> note = validateNoteAndUser(noteId, userId);
+
+		if (note.get().getLabelList() == null) {
+			List<Label> newLabelList = new ArrayList<>();
+			note.get().setLabelList(newLabelList);
+		}
+
+		Label labelFound = labelRepository.findByLabelNameAndUserId(labelName, userId);
+		Label label = new Label();
+
+		if (labelFound == null) {
+			LabelViewDTO labelViewDTO = createLabel(labelName, userId);
+			label.setLabelId(labelViewDTO.getLabelId());
+			label.setLabelName(labelName);
+			note.get().getLabelList().add(label);
+		} else {
+
+			for (int i = 0; i < note.get().getLabelList().size(); i++) {
+				if (note.get().getLabelList().get(i).getLabelId().equals(labelFound.getLabelId())) {
+					throw new LabelNotFoundException("Label already present");
+				}
+			}
+
+			label.setLabelId(labelFound.getLabelId());
+			label.setLabelName(labelName);
+			note.get().getLabelList().add(label);
+		}
+		noteRespository.save(note.get());
+
+	}
 }

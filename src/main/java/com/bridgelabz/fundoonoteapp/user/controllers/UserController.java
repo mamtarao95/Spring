@@ -20,7 +20,7 @@ import com.bridgelabz.fundoonoteapp.user.models.SetPasswordDTO;
 import com.bridgelabz.fundoonoteapp.user.services.UserService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/fundoo")
 public class UserController {
 
 	@Autowired

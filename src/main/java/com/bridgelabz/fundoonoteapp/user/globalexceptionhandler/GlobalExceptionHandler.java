@@ -3,14 +3,10 @@ package com.bridgelabz.fundoonoteapp.user.globalexceptionhandler;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.WebApplicationContext;
-
 import com.bridgelabz.fundoonoteapp.user.exceptions.ForgotPasswordException;
 import com.bridgelabz.fundoonoteapp.user.exceptions.LoginException;
 import com.bridgelabz.fundoonoteapp.user.exceptions.RegisterationException;

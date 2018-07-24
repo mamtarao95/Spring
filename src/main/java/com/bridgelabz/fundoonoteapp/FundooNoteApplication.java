@@ -10,6 +10,10 @@ public class FundooNoteApplication {
 		SpringApplication.run(FundooNoteApplication.class, args);
 		
 	}
+	
+	
+
+
 }
 
 

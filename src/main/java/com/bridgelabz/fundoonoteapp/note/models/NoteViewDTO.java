@@ -2,7 +2,7 @@ package com.bridgelabz.fundoonoteapp.note.models;
 
 import java.util.Date;
 
-public class ViewNoteDTO {
+public class NoteViewDTO {
 	private String noteId;
 	private String title;
 	private String description;
@@ -10,6 +10,23 @@ public class ViewNoteDTO {
 	private Date updatedAt;
 	private Date reminder;
 	private String color;
+
+	public NoteViewDTO() {
+		
+	}
+	public NoteViewDTO(String noteId, String title, String description, Date createdAt, Date updatedAt, Date reminder,
+			String color) {
+		super();
+		this.noteId = noteId;
+		this.title = title;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.reminder = reminder;
+		this.color = color;
+	}
+
+	
 
 	public String getColor() {
 		return color;
