@@ -62,6 +62,7 @@ public class NoteApplicationTest {
 	//@Test
 		public void createNoteTest() throws Exception {
 			mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/createnote").contentType(MediaType.APPLICATION_JSON)
+					
 					.content("{\"description\" : \"notedescription\", \"title\" : \"title\",\"color\" : \"white\",\"reminder\" : \"2018-07-21T10:02:43.210Z\",\"isPin\" : \"false\",\"isArchive\" : \"false\"}")
 					.requestAttr("userId", "5b5014124b47f81fbe60ce52")
 					.accept(MediaType.APPLICATION_JSON))

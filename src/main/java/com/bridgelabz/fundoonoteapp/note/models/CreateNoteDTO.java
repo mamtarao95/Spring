@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoonoteapp.note.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class CreateNoteDTO {
 
@@ -18,14 +19,14 @@ public class CreateNoteDTO {
 
 	private boolean isArchive;
 
-	private String label; 
-	
-	public String getLabel() {
-		return label;
+	private List<String> labelNameList;
+
+	public List<String> getLabelNameList() {
+		return labelNameList;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setLabelNameList(List<String> labelNameList) {
+		this.labelNameList = labelNameList;
 	}
 
 	public boolean isPin() {

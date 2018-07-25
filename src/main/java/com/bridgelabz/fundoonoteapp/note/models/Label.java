@@ -13,15 +13,6 @@ public class Label {
 	
 	private String labelName;
 	
-	//private List<String> noteId;
-/*
-	public List<String> getNoteId() {
-		return noteId;
-	}
-
-	public void setNoteId(List<String> noteId) {
-		this.noteId = noteId;
-	}*/
 
 	public String getLabelId() {
 		return labelId;

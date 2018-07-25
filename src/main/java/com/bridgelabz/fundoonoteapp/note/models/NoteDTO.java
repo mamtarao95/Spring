@@ -1,8 +1,9 @@
 package com.bridgelabz.fundoonoteapp.note.models;
 
 import java.util.Date;
+import java.util.List;
 
-public class NoteViewDTO {
+public class NoteDTO {
 	private String noteId;
 	private String title;
 	private String description;
@@ -10,11 +11,14 @@ public class NoteViewDTO {
 	private Date updatedAt;
 	private Date reminder;
 	private String color;
+	private boolean isArchive;
+	private boolean isPin;
+	private List<String> labelName;
 
-	public NoteViewDTO() {
+	public NoteDTO() {
 		
 	}
-	public NoteViewDTO(String noteId, String title, String description, Date createdAt, Date updatedAt, Date reminder,
+	public NoteDTO(String noteId, String title, String description, Date createdAt, Date updatedAt, Date reminder,
 			String color) {
 		super();
 		this.noteId = noteId;
@@ -28,6 +32,24 @@ public class NoteViewDTO {
 
 	
 
+	public boolean isArchive() {
+		return isArchive;
+	}
+	public void setArchive(boolean isArchive) {
+		this.isArchive = isArchive;
+	}
+	public boolean isPin() {
+		return isPin;
+	}
+	public void setPin(boolean isPin) {
+		this.isPin = isPin;
+	}
+	public List<String> getLabelName() {
+		return labelName;
+	}
+	public void setLabelName(List<String> labelName) {
+		this.labelName = labelName;
+	}
 	public String getColor() {
 		return color;
 	}

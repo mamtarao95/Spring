@@ -7,13 +7,13 @@ import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.LabelViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.NoteViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 
 public interface NoteService {
 
-	NoteViewDTO createNote(CreateNoteDTO createNoteDTO, String userId)
+	NoteDTO createNote(CreateNoteDTO createNoteDTO, String userId)
 			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException;
 
 	void emptyTrash(String token) throws NoteNotFoundException, UnAuthorizedException;
@@ -29,13 +29,13 @@ public interface NoteService {
 
 	void removeRemiander(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
 
-	NoteViewDTO viewNote(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
+	NoteDTO viewNote(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
 
-	List<NoteViewDTO> viewAllNotes(String token) throws NoteNotFoundException;
+	List<NoteDTO> viewAllNotes(String token) throws NoteNotFoundException;
 
-	Iterable<NoteViewDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException;
+	Iterable<NoteDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException;
 
-	Iterable<NoteViewDTO> getArchiveNotes(String userId) throws NoteNotFoundException;
+	Iterable<NoteDTO> getArchiveNotes(String userId) throws NoteNotFoundException;
 
 	void setArchive(String userId, String noteId) throws NoteNotFoundException, UnAuthorizedException;
 
@@ -45,16 +45,16 @@ public interface NoteService {
 
 	void unPinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException;
 
-	List<LabelViewDTO> getLabels(String userId) throws LabelNotFoundException;
+	List<LabelDTO> getLabels(String userId) throws LabelNotFoundException;
 
-	LabelViewDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
+	LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
 
 	void deleteLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
 
-	LabelViewDTO renameLabel(String labelName, String userId);
-
-	Iterable<LabelViewDTO> getNotesOfLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
+	Iterable<LabelDTO> getNotesOfLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
 
 	void addLabel(String labelName, String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException;
+
+	void renameLabel(String labelId, String userId, String newLabelName) throws UnAuthorizedException, LabelNotFoundException;
 
 }

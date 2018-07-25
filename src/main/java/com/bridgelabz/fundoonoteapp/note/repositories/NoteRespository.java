@@ -2,17 +2,17 @@ package com.bridgelabz.fundoonoteapp.note.repositories;
 
 import java.util.List;
 import java.util.Optional;
-import com.bridgelabz.fundoonoteapp.note.models.NoteViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.bridgelabz.fundoonoteapp.note.models.Label;
-import com.bridgelabz.fundoonoteapp.note.models.LabelViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.Note;
 
 @Repository
-public interface NoteRespository extends MongoRepository<Note, String> {
+public interface NoteRespository extends MongoRepository<Note, String>{
 	Optional<Note> findByNoteId(String noteId);
 
 	Note findByUserIdAndNoteId(String UserId, String noteId);
@@ -28,6 +28,7 @@ public interface NoteRespository extends MongoRepository<Note, String> {
 
 	List<Note> findAllByUserIdAndIsArchive(String userId, boolean b);
 
-	@Query(value = "{ 'userId' : ?0, 'labelList.labelName' : ?1 }", fields = "{ 'labelList.labelName' : 1 }")
-    Label findByQuery(String userId, String labelName);
+	@Query(value = "{ 'userId' : ?0, 'labelList.labelId' : ?1 }")
+    List<Note> findAllByQuery(String userId,String labelId);
+	
 }

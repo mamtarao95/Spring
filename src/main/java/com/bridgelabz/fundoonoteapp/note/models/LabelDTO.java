@@ -1,6 +1,6 @@
 package com.bridgelabz.fundoonoteapp.note.models;
 
-public class LabelViewDTO {
+public class LabelDTO {
 	
 	private String labelId;
 	

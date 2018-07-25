@@ -23,9 +23,9 @@ import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.LabelViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
-import com.bridgelabz.fundoonoteapp.note.models.NoteViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 import com.bridgelabz.fundoonoteapp.note.services.NoteService;
 import com.bridgelabz.fundoonoteapp.user.models.Response;
 
@@ -37,15 +37,15 @@ public class NoteController {
 	private NoteService noteService;
 
 	@PostMapping("/createnote")
-	public ResponseEntity<NoteViewDTO> createNote(@RequestBody CreateNoteDTO createNoteDTO,
+	public ResponseEntity<NoteDTO> createNote(@RequestBody CreateNoteDTO createNoteDTO,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
 			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		NoteViewDTO note = noteService.createNote(createNoteDTO, userId);
+		NoteDTO note = noteService.createNote(createNoteDTO, userId);
 		return new ResponseEntity<>(note, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/deletenote/{noteId}")
-	public ResponseEntity<Response> deleteNote( @RequestHeader("userId") String userId,
+	public ResponseEntity<Response> deleteNote(@RequestHeader("userId") String userId,
 			@PathVariable("noteId") String noteId) throws NoteNotFoundException, UnAuthorizedException {
 		noteService.trashNote(userId, noteId);
 		Response responseDTO = new Response();
@@ -67,16 +67,16 @@ public class NoteController {
 	}
 
 	@GetMapping("/getnote/{noteId}")
-	public ResponseEntity<NoteViewDTO> viewNote(@PathVariable String noteId, @RequestHeader("userId") String userId,
+	public ResponseEntity<NoteDTO> viewNote(@PathVariable String noteId, @RequestHeader("userId") String userId,
 			HttpServletRequest request) throws NoteNotFoundException, UnAuthorizedException {
 		return new ResponseEntity<>(noteService.viewNote(noteId, userId), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteForeverOrRestoreNote/{noteId}")
 	public ResponseEntity<Response> deleteOrRestoreTrashedNote(@PathVariable String noteId,
-			@RequestHeader("userId") String userId, HttpServletRequest request,@RequestBody boolean isdelete)
+			@RequestHeader("userId") String userId, HttpServletRequest request, @RequestBody boolean isdelete)
 			throws NoteNotFoundException, UnAuthorizedException {
-		noteService.deleteOrRestoreTrashedNote(noteId, userId,isdelete);
+		noteService.deleteOrRestoreTrashedNote(noteId, userId, isdelete);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Deleted trashed Note Successfully!!");
 		responseDTO.setStatus(4);
@@ -95,9 +95,8 @@ public class NoteController {
 	}
 
 	@PostMapping("/removereminder/{noteId}")
-	public ResponseEntity<Response> removeRemainder(@PathVariable String noteId,
-			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException {
+	public ResponseEntity<Response> removeRemainder(@PathVariable String noteId, @RequestHeader("userId") String userId,
+			HttpServletRequest request) throws NoteNotFoundException, UnAuthorizedException {
 		noteService.removeRemiander(noteId, userId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Reminder removed Successfully!!");
@@ -118,118 +117,117 @@ public class NoteController {
 	}
 
 	@GetMapping("/getallnotes")
-	public Iterable<NoteViewDTO> viewAllNotes(HttpServletRequest request, @RequestHeader("userId") String userId)
+	public Iterable<NoteDTO> viewAllNotes(HttpServletRequest request, @RequestHeader("userId") String userId)
 			throws NoteNotFoundException {
 		return noteService.viewAllNotes(userId);
 	}
 
-	
 	@GetMapping("/getalltrashednotes")
-	public Iterable<NoteViewDTO> viewAllTrashedNotes(HttpServletRequest request, @RequestHeader("userId") String userId) throws NoteNotFoundException{
+	public Iterable<NoteDTO> viewAllTrashedNotes(HttpServletRequest request, @RequestHeader("userId") String userId)
+			throws NoteNotFoundException {
 		return noteService.viewAllTrashedNotes(userId);
 	}
-	
+
 	@GetMapping("/getarchivenotes")
-	public Iterable<NoteViewDTO> getArchiveNotes(HttpServletRequest request, @RequestHeader("userId") String userId) throws NoteNotFoundException{
+	public Iterable<NoteDTO> getArchiveNotes(HttpServletRequest request, @RequestHeader("userId") String userId)
+			throws NoteNotFoundException {
 		return noteService.getArchiveNotes(userId);
 	}
-	
+
 	@PutMapping("/setarchive/{noteId}")
-	public ResponseEntity<Response> setArchive(HttpServletRequest request, @PathVariable String noteId,@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException{
-		noteService.setArchive(userId,noteId);
+	public ResponseEntity<Response> setArchive(HttpServletRequest request, @PathVariable String noteId,
+			@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.setArchive(userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Note Archived Successfully!!");
 		responseDTO.setStatus(8);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/unarchive/{noteId}")
-	public ResponseEntity<Response> unArchive(HttpServletRequest request, @PathVariable String noteId,@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException{
-		noteService.unArchive(userId,noteId);
+	public ResponseEntity<Response> unArchive(HttpServletRequest request, @PathVariable String noteId,
+			@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.unArchive(userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Note UnArchived Successfully!!");
 		responseDTO.setStatus(9);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
+
 	@PutMapping("/pin/{noteId}")
-	public ResponseEntity<Response> PinNote(HttpServletRequest request, @PathVariable String noteId,@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException{
-		noteService.pinNote(userId,noteId);
+	public ResponseEntity<Response> PinNote(HttpServletRequest request, @PathVariable String noteId,
+			@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.pinNote(userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Note pinned Successfully!!");
 		responseDTO.setStatus(8);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/unpin/{noteId}")
-	public ResponseEntity<Response> unPinNote(HttpServletRequest request, @PathVariable String noteId,@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException{
-		noteService.unPinNote(userId,noteId);
+	public ResponseEntity<Response> unPinNote(HttpServletRequest request, @PathVariable String noteId,
+			@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException {
+		noteService.unPinNote(userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Note UnPinned Successfully!!");
 		responseDTO.setStatus(9);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/viewLabels")
-	public Iterable<LabelViewDTO> getLabels(HttpServletRequest request,@RequestHeader("userId") String userId) throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException{
+	public Iterable<LabelDTO> getLabels(HttpServletRequest request, @RequestHeader("userId") String userId)
+			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
 		return noteService.getLabels(userId);
 	}
-	
+
 	@PostMapping("/createlabel")
-	public ResponseEntity<LabelViewDTO> createLabel(@RequestBody String labelName,
+	public ResponseEntity<LabelDTO> createLabel(@RequestParam String labelName,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
 			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		LabelViewDTO labelViewDTO=noteService.createLabel(labelName,userId);
+		LabelDTO labelViewDTO = noteService.createLabel(labelName, userId);
 		return new ResponseEntity<>(labelViewDTO, HttpStatus.CREATED);
 	}
 	
+
 	@DeleteMapping("/deletelabel")
-	public ResponseEntity<Response> deleteLabel(@RequestBody String labelName,
-			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		noteService.deleteLabel(labelName,userId);
+	public ResponseEntity<Response> deleteLabel(@RequestParam String labelId, @RequestHeader("userId") String userId,
+			HttpServletRequest request) throws UnAuthorizedException, LabelNotFoundException {
+		noteService.deleteLabel(labelId, userId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Label deleted Successfully!!");
-		responseDTO.setStatus(8);
+		responseDTO.setStatus(10);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-	
+
 	}
-	
-	
+
 	@PostMapping("/addlabel")
-	public ResponseEntity<Response> addLabel(@RequestBody String labelName,@RequestParam("noteId") String noteId, 
+	public ResponseEntity<Response> addLabel(@RequestParam String labelId, @RequestParam("noteId") String noteId,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
 			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		noteService.addLabel(labelName,userId,noteId);
+		noteService.addLabel(labelId, userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Label added Successfully!!");
-		responseDTO.setStatus(8);
+		responseDTO.setStatus(11);
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-	
-	}
-	
-	@PutMapping("/renamelabel")
-	public ResponseEntity<LabelViewDTO> renameLabel(@RequestBody String labelName,
-			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		LabelViewDTO labelViewDTO=noteService.renameLabel(labelName,userId);
-		return new ResponseEntity<>(labelViewDTO, HttpStatus.CREATED);
-	}
-	
-	@GetMapping("/getnotesoflabel")
-	public Iterable<LabelViewDTO> getNotesOfLabel(@RequestBody String labelName,
-			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
-		System.out.println("jjjjjjjjjjj");
-		return noteService.getNotesOfLabel(labelName,userId);
-		
-	}
-	
-	
-	    
 
-	
-	
-	
-	
+	}
+
+	@PutMapping("/renamelabel")
+	public ResponseEntity<Response> renameLabel(@RequestParam String labelId, @RequestParam String newLabelName,
+			@RequestHeader("userId") String userId, HttpServletRequest request)
+			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+		noteService.renameLabel(labelId, userId, newLabelName);
+		Response responseDTO = new Response();
+		responseDTO.setMessage("Label renamed Successfully!!");
+		responseDTO.setStatus(12);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@GetMapping("/getnotesoflabel")
+	public Iterable<LabelDTO> getNotesOfLabel(@RequestBody String labelName, @RequestHeader("userId") String userId,
+			HttpServletRequest request) throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+		return noteService.getNotesOfLabel(labelName, userId);
+
+	}
 
 }
