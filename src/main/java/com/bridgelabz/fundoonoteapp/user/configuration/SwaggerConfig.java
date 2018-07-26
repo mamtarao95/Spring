@@ -19,58 +19,9 @@ public class SwaggerConfig {
     public Docket api() { 
         return new Docket(DocumentationType.SWAGGER_2)  
           .select()                                  
-          .apis(RequestHandlerSelectors.any())              
-         // .paths(PathSelectors.regex("/.*"))                          
+          .apis(RequestHandlerSelectors.any())                                   
           .build();                                           
     }
 	
-	/* @Bean
-	    SecurityConfiguration security() {
-	    return new SecurityConfiguration(null, null, null, null, "token", ApiKeyVehicle.HEADER, "token", ",");
-		 
-	 }*/
+}
 	
-	/*@Bean
-	SecurityConfiguration security() {
-	    return new SecurityConfiguration(
-	            null,
-	            null,
-	            null, // realm Needed for authenticate button to work
-	            null, // appName Needed for authenticate button to work
-	            "BEARER"// apiKeyValue
-	            ,ApiKeyVehicle.HEADER,
-	           " AUTHORIZATION", //apiKeyName
-	            null);
-	}
-	
-	private ApiKey apiKey() {
-	    return new ApiKey("apikey", "Authorization", "header");
-	}
-	*/
-	   /* private SecurityContext securityContext() {
-	        return SecurityContext.builder()
-	              
-	                .forPaths(PathSelectors.regex("/anyPath.*"))
-	                .build();
-	    }
-*/
-	   /* List<SecurityReference> defaultAuth() {
-	        AuthorizationScope authorizationScope
-	                = new AuthorizationScope("global", "accessEverything");
-	        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-	        authorizationScopes[0] = authorizationScope;
-	        return Lists.newArrayList(
-	                new SecurityReference("mykey", authorizationScopes));
-	    }*/
-
-	    /*@Bean
-	    SecurityConfiguration security() {
-	        return new SecurityConfiguration(
-	                null, null, null,
-	                "project-name-v2",
-	                "123",
-	                ApiKeyVehicle.QUERY_PARAM,
-	                "key",
-	                ","scope separator);
-	    }*/
-	}

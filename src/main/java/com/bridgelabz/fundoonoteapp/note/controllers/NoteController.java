@@ -1,8 +1,6 @@
 package com.bridgelabz.fundoonoteapp.note.controllers;
 
 import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,16 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNameAlreadyUsedException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotTrashedException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.ReminderDateNotValidException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.UserNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
@@ -39,7 +39,7 @@ public class NoteController {
 	@PostMapping("/createnote")
 	public ResponseEntity<NoteDTO> createNote(@RequestBody CreateNoteDTO createNoteDTO,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException, ReminderDateNotValidException {
 		NoteDTO note = noteService.createNote(createNoteDTO, userId);
 		return new ResponseEntity<>(note, HttpStatus.CREATED);
 	}
@@ -75,7 +75,7 @@ public class NoteController {
 	@DeleteMapping("/deleteForeverOrRestoreNote/{noteId}")
 	public ResponseEntity<Response> deleteOrRestoreTrashedNote(@PathVariable String noteId,
 			@RequestHeader("userId") String userId, HttpServletRequest request, @RequestBody boolean isdelete)
-			throws NoteNotFoundException, UnAuthorizedException {
+			throws NoteNotFoundException, UnAuthorizedException, NoteNotTrashedException {
 		noteService.deleteOrRestoreTrashedNote(noteId, userId, isdelete);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Deleted trashed Note Successfully!!");
@@ -107,7 +107,7 @@ public class NoteController {
 
 	@PutMapping("/addreminder/{noteId}")
 	public ResponseEntity<Response> addReminder(@PathVariable String noteId, HttpServletRequest request,
-			@RequestBody Date reminder) throws NoteNotFoundException, UnAuthorizedException {
+			@RequestBody Date reminder) throws NoteNotFoundException, UnAuthorizedException, ReminderDateNotValidException {
 		noteService.addReminder(noteId, request.getAttribute("userId").toString(), reminder);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Reminder added Successfully!!");
@@ -124,7 +124,7 @@ public class NoteController {
 
 	@GetMapping("/getalltrashednotes")
 	public Iterable<NoteDTO> viewAllTrashedNotes(HttpServletRequest request, @RequestHeader("userId") String userId)
-			throws NoteNotFoundException {
+			throws NoteNotFoundException, NoteNotTrashedException {
 		return noteService.viewAllTrashedNotes(userId);
 	}
 
@@ -191,7 +191,7 @@ public class NoteController {
 
 	@DeleteMapping("/deletelabel")
 	public ResponseEntity<Response> deleteLabel(@RequestParam String labelId, @RequestHeader("userId") String userId,
-			HttpServletRequest request) throws UnAuthorizedException, LabelNotFoundException {
+			HttpServletRequest request) throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException {
 		noteService.deleteLabel(labelId, userId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Label deleted Successfully!!");
@@ -203,7 +203,7 @@ public class NoteController {
 	@PostMapping("/addlabel")
 	public ResponseEntity<Response> addLabel(@RequestParam String labelId, @RequestParam("noteId") String noteId,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException, LabelNameAlreadyUsedException {
 		noteService.addLabel(labelId, userId, noteId);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Label added Successfully!!");
@@ -215,7 +215,7 @@ public class NoteController {
 	@PutMapping("/renamelabel")
 	public ResponseEntity<Response> renameLabel(@RequestParam String labelId, @RequestParam String newLabelName,
 			@RequestHeader("userId") String userId, HttpServletRequest request)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+			throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException {
 		noteService.renameLabel(labelId, userId, newLabelName);
 		Response responseDTO = new Response();
 		responseDTO.setMessage("Label renamed Successfully!!");
@@ -224,8 +224,8 @@ public class NoteController {
 	}
 
 	@GetMapping("/getnotesoflabel")
-	public Iterable<LabelDTO> getNotesOfLabel(@RequestBody String labelName, @RequestHeader("userId") String userId,
-			HttpServletRequest request) throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException {
+	public Iterable<NoteDTO> getNotesOfLabel(@RequestBody String labelName, @RequestHeader("userId") String userId,
+			HttpServletRequest request) throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException, UserNotFoundException {
 		return noteService.getNotesOfLabel(labelName, userId);
 
 	}

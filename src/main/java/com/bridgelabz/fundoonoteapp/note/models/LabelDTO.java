@@ -6,6 +6,9 @@ public class LabelDTO {
 	
 	private String labelName;
 
+	public LabelDTO() {
+		
+	}
 	public String getLabelId() {
 		return labelId;
 	}
@@ -19,6 +22,12 @@ public class LabelDTO {
 	}
 
 	public void setLabelName(String labelName) {
+		this.labelName = labelName;
+	}
+
+	public LabelDTO(String labelId, String labelName) {
+		super();
+		this.labelId = labelId;
 		this.labelName = labelName;
 	}
 	

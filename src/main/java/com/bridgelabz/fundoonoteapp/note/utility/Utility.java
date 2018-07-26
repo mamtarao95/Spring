@@ -28,20 +28,20 @@ public class Utility {
 	}
 
 	public static boolean validateReminder(Date reminder) {
-		if (reminder.before(new Date())) {
-			return false;
-		}
-		return true;
+		return reminder.before(new Date());
+		
 	}
 
 	public static void validateCreateDTO(CreateNoteDTO createNoteDTO) throws NoteNotFoundException {
-		if (createNoteDTO.getDescription().equals("")  && createNoteDTO.getTitle().equals("")|| createNoteDTO.getDescription()==null && createNoteDTO.getTitle() == null) {
+		if (createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle().equals("")
+				|| createNoteDTO.getDescription() == null && createNoteDTO.getTitle() == null) {
 			throw new NoteNotFoundException("Fields cannot be empty");
 		}
-		if(createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle() == null || createNoteDTO.getDescription()==null && createNoteDTO.getTitle() .equals("")) {
+		if (createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle() == null
+				|| createNoteDTO.getDescription() == null && createNoteDTO.getTitle().equals("")) {
 			throw new NoteNotFoundException("Fields cannot be empty");
 		}
-		
+
 	}
 
 	public static void validateUpdateDTO(UpdateNoteDTO updateNoteDTO) throws NoteNotFoundException {

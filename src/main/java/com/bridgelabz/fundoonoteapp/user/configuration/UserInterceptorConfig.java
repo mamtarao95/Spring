@@ -8,7 +8,7 @@ import com.bridgelabz.fundoonoteapp.user.interceptors.LoggerInterceptor;
 import com.bridgelabz.fundoonoteapp.user.interceptors.RequestProcessingTimeInterceptor;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class UserInterceptorConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

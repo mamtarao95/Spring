@@ -1,11 +1,12 @@
 package com.bridgelabz.fundoonoteapp.note.exceptions;
 
-public class ReminderDateNotValidException extends Exception {
+public class NoteNotTrashedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public ReminderDateNotValidException(String message) {
+	public NoteNotTrashedException(String message) {
 		super(message);
+
 	}
 
 }

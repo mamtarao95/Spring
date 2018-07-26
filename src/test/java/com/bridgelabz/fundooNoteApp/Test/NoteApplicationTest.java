@@ -1,8 +1,11 @@
-/*package com.bridgelabz.fundooNoteApp.Test;
+package com.bridgelabz.fundooNoteApp.Test;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -26,11 +29,14 @@ import static org.junit.Assert.assertEquals;
 
 import com.bridgelabz.fundoonoteapp.FundooNoteApplication;
 import com.bridgelabz.fundoonoteapp.note.controllers.NoteController;
+import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.ReminderDateNotValidException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
+import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.Note;
-import com.bridgelabz.fundoonoteapp.note.models.NoteViewDTO;
+import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 import com.bridgelabz.fundoonoteapp.note.repositories.NoteRespository;
 import com.bridgelabz.fundoonoteapp.note.services.NoteServiceImpl;
 
@@ -115,16 +121,18 @@ public class NoteApplicationTest {
 	}
 	
 	//@Test
-	public void testGetNote() throws UnAuthorizedException, NoteNotFoundException{
-		 NoteViewDTO note=new NoteViewDTO("5b5594014b47f81b502c09b4", "title", "notedescription", new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),
-					"white");
+	public void testGetNote() throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, ReminderDateNotValidException{
+		
+		LabelDTO label=new LabelDTO("5b5851ef4b47f81d79cfa45a","label1");
+		List<LabelDTO> labelList=new ArrayList<>();
+		labelList.add(label);
+		 NoteDTO note=new NoteDTO("5b5594014b47f81b502c09b4", "title", "notedescription", new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),
+					"white",true,true,labelList);
 		String userId="5b5014124b47f81fbe60ce52";
-		CreateNoteDTO createNoteDTO=new CreateNoteDTO("title","description","color",new java.util.Date(System.currentTimeMillis()),false,false);
+		CreateNoteDTO createNoteDTO=new CreateNoteDTO("title","description","white" ,new java.util.Date(System.currentTimeMillis()),false,false);
 		Mockito.when(noteService.createNote(createNoteDTO,userId)).thenReturn(note);
-		assertArrayEquals(expecteds, actuals);
-	assertEquals(message, expected, actual);
+
 	}
 }
 
 
-*/

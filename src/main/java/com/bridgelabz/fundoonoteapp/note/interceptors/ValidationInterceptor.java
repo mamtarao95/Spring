@@ -7,11 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import com.bridgelabz.fundoonoteapp.note.utility.Utility;
 import com.bridgelabz.fundoonoteapp.user.interceptors.LoggerInterceptor;
 
-import io.jsonwebtoken.Claims;
 
 @Component
 public class ValidationInterceptor extends HandlerInterceptorAdapter {

@@ -21,53 +21,7 @@ public class Note {
 	private String color;
 	private boolean isPin;
 	private boolean isArchive;
-	private List<Label> labelList;
-
-	public Note() {
-
-	}
-
-	public Note(String noteId, String userId, String title, String description, Date createdAt, Date updatedAt,
-			Date reminder, boolean isTrashed, String color, boolean isPin, boolean isArchive, List<Label> labelList) {
-		super();
-		this.noteId = noteId;
-		this.userId = userId;
-		this.title = title;
-		this.description = description;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.reminder = reminder;
-		this.isTrashed = isTrashed;
-		this.color = color;
-		this.isPin = isPin;
-		this.isArchive = isArchive;
-		this.labelList = labelList;
-	}
-
-
-	public boolean isPin() {
-		return isPin;
-	}
-
-	public void setPin(boolean isPin) {
-		this.isPin = isPin;
-	}
-
-	public boolean isArchive() {
-		return isArchive;
-	}
-
-	public void setArchive(boolean isArchive) {
-		this.isArchive = isArchive;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
+	private List<LabelDTO> labels;
 
 	public String getNoteId() {
 		return noteId;
@@ -133,13 +87,36 @@ public class Note {
 		this.isTrashed = isTrashed;
 	}
 
-	
-	public List<Label> getLabelList() {
-		return labelList;
+	public String getColor() {
+		return color;
 	}
 
-	public void setLabelList(List<Label> labelList) {
-		this.labelList = labelList;
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public boolean isPin() {
+		return isPin;
+	}
+
+	public void setPin(boolean isPin) {
+		this.isPin = isPin;
+	}
+
+	public boolean isArchive() {
+		return isArchive;
+	}
+
+	public void setArchive(boolean isArchive) {
+		this.isArchive = isArchive;
+	}
+
+	public List<LabelDTO> getLabels() {
+		return labels;
+	}
+
+	public void setLabels(List<LabelDTO> labels) {
+		this.labels = labels;
 	}
 
 }

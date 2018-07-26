@@ -21,5 +21,5 @@ public class UserConfiguration {
 		return new ModelMapper();
 
 	}
-
 }
+	

@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.bridgelabz.fundoonoteapp.note.interceptors.ValidationInterceptor;
 
 @Configuration
-public class NoteInterceptorConfiguration implements WebMvcConfigurer {
+public class NoteInterceptorConfig implements WebMvcConfigurer {
 	
 	@Autowired
 	ValidationInterceptor validationInterceptor;

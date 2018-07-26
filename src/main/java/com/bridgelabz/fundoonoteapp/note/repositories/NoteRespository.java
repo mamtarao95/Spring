@@ -19,7 +19,9 @@ public interface NoteRespository extends MongoRepository<Note, String>{
 
 	Long deleteNoteByIsTrashed(boolean trashed);
 
-	void save(Optional<Note> note);
+	Optional<Note> save(Optional<Note> note);
+	//Optional<Note> insert(Note note);
+	
 	void deleteNoteByIsTrashedAndUserId(boolean b, String id);
 
 	Optional<Note> findOneByUserId(String userId);
