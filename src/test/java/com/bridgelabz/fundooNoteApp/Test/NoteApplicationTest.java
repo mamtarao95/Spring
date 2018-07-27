@@ -130,7 +130,7 @@ public class NoteApplicationTest {
 					"white",true,true,labelList);
 		String userId="5b5014124b47f81fbe60ce52";
 		CreateNoteDTO createNoteDTO=new CreateNoteDTO("title","description","white" ,new java.util.Date(System.currentTimeMillis()),false,false);
-		Mockito.when(noteService.createNote(createNoteDTO,userId)).thenReturn(note);
+		//Mockito.when(noteService.createNote(createNoteDTO,userId)).thenReturn(note);
 
 	}
 }

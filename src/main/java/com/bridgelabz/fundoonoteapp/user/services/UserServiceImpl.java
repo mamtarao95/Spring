@@ -81,13 +81,14 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 
 		Optional<User> optionalUser1 = userRepository.findByEmail(user.getEmail());
-
+		if(optionalUser1.isPresent()) {
 		String token = Utility.tokenGenerator(optionalUser1.get().getId());
 		EmailDTO emailDTO = new EmailDTO();
 		emailDTO.setMessage(env.getProperty("activation.subject")+ token);
 		emailDTO.setSubject(env.getProperty("activation.link"));
 		emailDTO.setTo(user.getEmail());
 		producer.produceMessage(emailDTO);
+}
 	}
 
 	@Override

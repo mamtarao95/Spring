@@ -20,7 +20,6 @@ public interface NoteRespository extends MongoRepository<Note, String>{
 	Long deleteNoteByIsTrashed(boolean trashed);
 
 	Optional<Note> save(Optional<Note> note);
-	//Optional<Note> insert(Note note);
 	
 	void deleteNoteByIsTrashedAndUserId(boolean b, String id);
 
@@ -32,5 +31,6 @@ public interface NoteRespository extends MongoRepository<Note, String>{
 
 	@Query(value = "{ 'userId' : ?0, 'labelList.labelId' : ?1 }")
     List<Note> findAllByQuery(String userId,String labelId);
+
 	
 }

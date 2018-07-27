@@ -10,16 +10,39 @@ import com.bridgelabz.fundoonoteapp.note.models.Label;
 @Repository
 public interface LabelRepository extends MongoRepository<Label,String> {
 
+	/**
+	 * @param userId
+	 * @return
+	 */
 	List<Label> findAllByUserId(String userId);
 
+	/**
+	 * @param labelName
+	 * @return
+	 */
 	Optional<Label> findByLabelName(String labelName);
 
 
-	Label findByLabelIdAndUserId(String labelId, String userId);
+	/**
+	 * @param labelId
+	 * @param userId
+	 * @return
+	 */
+	Optional<Label> findByLabelIdAndUserId(String labelId, String userId);
 
+	/**
+	 * @param labelId
+	 */
 	void deleteByLabelId(String labelId);
 
+	/**
+	 * @param labelName
+	 * @param userId
+	 * @return
+	 */
 	Optional<Label> findByLabelNameAndUserId(String labelName,String userId);
+
+
 	
 	
 

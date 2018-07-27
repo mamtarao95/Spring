@@ -17,48 +17,201 @@ import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 
 public interface NoteService {
 
+	/**
+	 * @param createNoteDTO
+	 * @param userId
+	 * @return
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws LabelNotFoundException
+	 * @throws ReminderDateNotValidException
+	 * @throws UserNotFoundException 
+	 */
 	NoteDTO createNote(CreateNoteDTO createNoteDTO, String userId)
-			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException, ReminderDateNotValidException;
+			throws NoteNotFoundException, UnAuthorizedException, LabelNotFoundException, ReminderDateNotValidException, UserNotFoundException;
 
+	/**
+	 * @param token
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 */
 	void emptyTrash(String token) throws NoteNotFoundException, UnAuthorizedException;
 
-	void updateNote(UpdateNoteDTO updateNoteDTO, String token) throws NoteNotFoundException, UnAuthorizedException;
+	/**
+	 * @param updateNoteDTO
+	 * @param token
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws UserNotFoundException 
+	 */
+	void updateNote(UpdateNoteDTO updateNoteDTO, String token) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
+	/**
+	 * @param noteId
+	 * @param token
+	 * @param input
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws NoteNotTrashedException
+	 * @throws UserNotFoundException 
+	 */
 	void deleteOrRestoreTrashedNote(String noteId, String token, boolean input)
-			throws NoteNotFoundException, UnAuthorizedException, NoteNotTrashedException;
+			throws NoteNotFoundException, UnAuthorizedException, NoteNotTrashedException, UserNotFoundException;
 
-	void trashNote(String token, String noteId) throws NoteNotFoundException, UnAuthorizedException;
+	/**
+	 * @param token
+	 * @param noteId
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws UserNotFoundException 
+	 */
+	void trashNote(String token, String noteId) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
-	void addReminder(String noteId, String token, Date reminder) throws NoteNotFoundException, UnAuthorizedException, ReminderDateNotValidException;
+	/**
+	 * @param noteId
+	 * @param token
+	 * @param reminder
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws ReminderDateNotValidException
+	 * @throws UserNotFoundException 
+	 */
+	void addReminder(String noteId, String token, Date reminder) throws NoteNotFoundException, UnAuthorizedException, ReminderDateNotValidException, UserNotFoundException;
 
-	void removeRemiander(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
+	/**
+	 * @param noteId
+	 * @param token
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws UserNotFoundException 
+	 */
+	void removeRemiander(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
-	NoteDTO viewNote(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException;
+	/**
+	 * @param noteId
+	 * @param token
+	 * @return
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws UserNotFoundException 
+	 */
+	NoteDTO viewNote(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
+	/**
+	 * @param token
+	 * @return
+	 * @throws NoteNotFoundException
+	 */
 	List<NoteDTO> viewAllNotes(String token) throws NoteNotFoundException;
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws NoteNotFoundException
+	 * @throws NoteNotTrashedException
+	 */
 	Iterable<NoteDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException, NoteNotTrashedException;
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws NoteNotFoundException
+	 */
 	Iterable<NoteDTO> getArchiveNotes(String userId) throws NoteNotFoundException;
 
-	void setArchive(String userId, String noteId) throws NoteNotFoundException, UnAuthorizedException;
+	/**
+	 * @param userId
+	 * @param noteId
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 * @throws UserNotFoundException 
+	 */
+	void setArchive(String userId, String noteId) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
-	void unArchive(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException;
+	/**
+	 * @param userId
+	 * @param noteId
+	 * @throws UnAuthorizedException
+	 * @throws NoteNotFoundException
+	 * @throws UserNotFoundException 
+	 */
+	void unArchive(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
 
-	void pinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException;
+	/**
+	 * @param userId
+	 * @param noteId
+	 * @throws UnAuthorizedException
+	 * @throws NoteNotFoundException
+	 * @throws UserNotFoundException 
+	 */
+	void pinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
 
-	void unPinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException;
+	/**
+	 * @param userId
+	 * @param noteId
+	 * @throws UnAuthorizedException
+	 * @throws NoteNotFoundException
+	 * @throws UserNotFoundException 
+	 */
+	void unPinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws LabelNotFoundException
+	 */
 	List<LabelDTO> getLabels(String userId) throws LabelNotFoundException;
 
+	/**
+	 * @param labelName
+	 * @param userId
+	 * @return
+	 * @throws UnAuthorizedException
+	 * @throws LabelNotFoundException
+	 */
 	LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
 
+	/**
+	 * @param labelName
+	 * @param userId
+	 * @throws UnAuthorizedException
+	 * @throws LabelNotFoundException
+	 * @throws UserNotFoundException
+	 */
 	void deleteLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException;
 
+	/**
+	 * @param labelName
+	 * @param userId
+	 * @return
+	 * @throws UnAuthorizedException
+	 * @throws LabelNotFoundException
+	 * @throws UserNotFoundException
+	 */
 	Iterable<NoteDTO> getNotesOfLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException;
 
-	void addLabel(String labelName, String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, LabelNameAlreadyUsedException;
+	/**
+	 * @param labelName
+	 * @param userId
+	 * @param noteId
+	 * @throws UnAuthorizedException
+	 * @throws NoteNotFoundException
+	 * @throws LabelNotFoundException
+	 * @throws LabelNameAlreadyUsedException
+	 * @throws UserNotFoundException 
+	 */
+	void addLabel(String labelName, String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, LabelNameAlreadyUsedException, UserNotFoundException;
 
+	/**
+	 * @param labelId
+	 * @param userId
+	 * @param newLabelName
+	 * @throws UnAuthorizedException
+	 * @throws LabelNotFoundException
+	 * @throws UserNotFoundException
+	 */
 	void renameLabel(String labelId, String userId, String newLabelName) throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException;
+
+	void removeLabel(String userId, String labelId, String noteId) throws UserNotFoundException, LabelNotFoundException, NoteNotFoundException, UnAuthorizedException;
 
 }
