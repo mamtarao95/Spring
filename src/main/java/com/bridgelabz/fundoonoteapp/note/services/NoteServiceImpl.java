@@ -43,10 +43,10 @@ public class NoteServiceImpl implements NoteService {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	LabelRepository labelRepository;
+	private LabelRepository labelRepository;
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@Override
 	public NoteDTO createNote(CreateNoteDTO createNoteDTO, String userId) throws UnAuthorizedException,
@@ -176,9 +176,11 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public void removeRemiander(String noteId, String userId)
+	public void removeReminder(String noteId, String userId)
 			throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException {
+
 		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+
 		Note note = optionalNote.get();
 		note.setReminder(null);
 		noteRespository.save(note);
@@ -192,8 +194,7 @@ public class NoteServiceImpl implements NoteService {
 		if (note.get().isTrashed()) {
 			throw new NoteNotFoundException(env.getProperty("NoteNotFound"));
 		}
-		return modelMapper.map(note.get(), NoteDTO.class);
-
+		return mapModels(note.get());
 	}
 
 	@Override
@@ -252,6 +253,7 @@ public class NoteServiceImpl implements NoteService {
 			throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException {
 		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
 		Note note = optionalNote.get();
+		note.setPin(false);
 		note.setArchive(true);
 		noteRespository.save(note);
 
@@ -267,22 +269,18 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public void pinNote(String userId, String noteId)
+	public void pinOrUnpinNote(String userId, String noteId, boolean isPin)
 			throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException {
-		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
-		Note note = optionalNote.get();
-		note.setPin(true);
-		noteRespository.save(note);
-	}
 
-	@Override
-	public void unPinNote(String userId, String noteId)
-			throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException {
 		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
-		Note note = optionalNote.get();
-		note.setPin(false);
-		noteRespository.save(note);
 
+		Note note = optionalNote.get();
+		if (isPin) {
+			note.setPin(true);
+		} else {
+			note.setPin(false);
+		}
+		noteRespository.save(note);
 	}
 
 	@Override
@@ -299,13 +297,13 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException {
+	public LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException, LabelNameAlreadyUsedException {
 		if (!userRepository.findById(userId).isPresent()) {
 			throw new UnAuthorizedException(env.getProperty("UserNotFound"));
 		}
 		Optional<Label> labelFound = labelRepository.findByLabelIdAndUserId(labelName, userId);
 		if (labelFound.isPresent()) {
-			return modelMapper.map(labelFound, LabelDTO.class);
+			throw new LabelNameAlreadyUsedException("Label already exists.You cannot have duplicate labels");
 		}
 		Label label = new Label();
 		label.setLabelName(labelName);
@@ -320,7 +318,7 @@ public class NoteServiceImpl implements NoteService {
 		validateLabelAndUser(userId, labelId);
 		labelRepository.deleteByLabelId(labelId);
 		List<Note> noteList = noteRespository.findAllByQuery(userId, labelId);
-
+		boolean flag = false;
 		for (int i = 0; i < noteList.size(); i++) {
 
 			for (int j = 0; j < noteList.get(i).getLabels().size(); j++) {
@@ -329,16 +327,19 @@ public class NoteServiceImpl implements NoteService {
 					noteList.get(i).getLabels().remove(j);
 					Note note = noteList.get(i);
 					noteRespository.save(note);
+					flag = true;
 					break;
 				}
 
 			}
+			if (flag)
+				break;
 
 		}
 	}
 
 	@Override
-	public void removeLabel(String userId, String labelId, String noteId)///////////////////
+	public void removeLabel(String userId, String labelId, String noteId)
 			throws UserNotFoundException, LabelNotFoundException, NoteNotFoundException, UnAuthorizedException {
 		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
 		boolean found = false;
@@ -359,10 +360,11 @@ public class NoteServiceImpl implements NoteService {
 	@Override
 	public void renameLabel(String labelId, String userId, String newLabelName)
 			throws LabelNotFoundException, UserNotFoundException {
+
 		Optional<Label> labelFound = validateLabelAndUser(userId, labelId);
 		labelFound.get().setLabelName(newLabelName);
 		labelRepository.save(labelFound.get());
-
+		boolean flag = false;
 		List<Note> noteList = noteRespository.findAllByQuery(userId, labelId);
 
 		for (int i = 0; i < noteList.size(); i++) {
@@ -373,10 +375,14 @@ public class NoteServiceImpl implements NoteService {
 					noteList.get(i).getLabels().get(j).setLabelName(newLabelName);
 					Note note = noteList.get(i);
 					noteRespository.save(note);
+					flag = true;
 					break;
 				}
 
 			}
+			if (flag)
+				break;
+
 		}
 
 	}
@@ -393,6 +399,19 @@ public class NoteServiceImpl implements NoteService {
 		}
 		return listOfNote;
 
+	}
+
+	@Override
+	public void changeColour(String noteId, String userId, String color)
+			throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException {
+
+		Optional<Note> optionalNote = validateNoteAndUser(noteId, userId);
+
+		if (color != null && color.trim().length() != 0) {
+			optionalNote.get().setColor(color);
+			noteRespository.save(optionalNote);
+
+		}
 	}
 
 	@Override

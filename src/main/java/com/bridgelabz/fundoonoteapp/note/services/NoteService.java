@@ -85,7 +85,7 @@ public interface NoteService {
 	 * @throws UnAuthorizedException
 	 * @throws UserNotFoundException 
 	 */
-	void removeRemiander(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
+	void removeReminder(String noteId, String token) throws NoteNotFoundException, UnAuthorizedException, UserNotFoundException;
 
 	/**
 	 * @param noteId
@@ -139,24 +139,6 @@ public interface NoteService {
 
 	/**
 	 * @param userId
-	 * @param noteId
-	 * @throws UnAuthorizedException
-	 * @throws NoteNotFoundException
-	 * @throws UserNotFoundException 
-	 */
-	void pinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
-
-	/**
-	 * @param userId
-	 * @param noteId
-	 * @throws UnAuthorizedException
-	 * @throws NoteNotFoundException
-	 * @throws UserNotFoundException 
-	 */
-	void unPinNote(String userId, String noteId) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
-
-	/**
-	 * @param userId
 	 * @return
 	 * @throws LabelNotFoundException
 	 */
@@ -168,8 +150,9 @@ public interface NoteService {
 	 * @return
 	 * @throws UnAuthorizedException
 	 * @throws LabelNotFoundException
+	 * @throws LabelNameAlreadyUsedException 
 	 */
-	LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException;
+	LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException, LabelNameAlreadyUsedException;
 
 	/**
 	 * @param labelName
@@ -212,6 +195,41 @@ public interface NoteService {
 	 */
 	void renameLabel(String labelId, String userId, String newLabelName) throws UnAuthorizedException, LabelNotFoundException, UserNotFoundException;
 
+	/**
+	 * @param userId
+	 * @param labelId
+	 * @param noteId
+	 * @throws UserNotFoundException
+	 * @throws LabelNotFoundException
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 */
 	void removeLabel(String userId, String labelId, String noteId) throws UserNotFoundException, LabelNotFoundException, NoteNotFoundException, UnAuthorizedException;
+
+	/**
+	 * @param noteId
+	 * @param userId
+	 */
+
+
+	/**
+	 * @param noteId
+	 * @param userId
+	 * @param color
+	 * @throws UserNotFoundException 
+	 * @throws NoteNotFoundException 
+	 * @throws UnAuthorizedException 
+	 */
+	void changeColour(String noteId, String userId, String color) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
+
+	/**
+	 * @param userId
+	 * @param noteId
+	 * @param isPin
+	 * @throws UserNotFoundException 
+	 * @throws NoteNotFoundException 
+	 * @throws UnAuthorizedException 
+	 */
+	void pinOrUnpinNote(String userId, String noteId, boolean isPin) throws UnAuthorizedException, NoteNotFoundException, UserNotFoundException;
 
 }

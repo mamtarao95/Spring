@@ -17,15 +17,24 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 import com.bridgelabz.fundoonoteapp.FundooNoteApplication;
 import com.bridgelabz.fundoonoteapp.note.controllers.NoteController;
@@ -33,12 +42,15 @@ import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.ReminderDateNotValidException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.UnAuthorizedException;
+import com.bridgelabz.fundoonoteapp.note.exceptions.UserNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.models.CreateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 import com.bridgelabz.fundoonoteapp.note.repositories.NoteRespository;
 import com.bridgelabz.fundoonoteapp.note.services.NoteServiceImpl;
+import com.bridgelabz.fundoonoteapp.user.models.Response;
+import com.bridgelabz.fundoonoteapp.user.repositories.UserRepository;
 
 
 @RunWith(SpringRunner.class)
@@ -58,6 +70,12 @@ public class NoteApplicationTest {
 	
 	@Mock
 	private NoteRespository noteRespository;
+	
+	@Mock
+	private UserRepository userRepository;
+	
+	@Mock
+	Environment env;
 	
 	@Before
 	public void init() {
@@ -121,18 +139,32 @@ public class NoteApplicationTest {
 	}
 	
 	//@Test
-	public void testGetNote() throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, ReminderDateNotValidException{
+	public void testGetNote() throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, ReminderDateNotValidException, UserNotFoundException{
 		
-		LabelDTO label=new LabelDTO("5b5851ef4b47f81d79cfa45a","label1");
+		LabelDTO label=new LabelDTO("5b5851e94b47f81d79cfa459","label2");
 		List<LabelDTO> labelList=new ArrayList<>();
 		labelList.add(label);
-		 NoteDTO note=new NoteDTO("5b5594014b47f81b502c09b4", "title", "notedescription", new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),
+		 NoteDTO note=new NoteDTO("5b5b00424b47f82fb1547807", "title", "notedescription", new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),  new java.util.Date(System.currentTimeMillis()),
 					"white",true,true,labelList);
 		String userId="5b5014124b47f81fbe60ce52";
 		CreateNoteDTO createNoteDTO=new CreateNoteDTO("title","description","white" ,new java.util.Date(System.currentTimeMillis()),false,false);
-		//Mockito.when(noteService.createNote(createNoteDTO,userId)).thenReturn(note);
+	Mockito.when(noteService.createNote(createNoteDTO,userId)).thenReturn(note);
 
 	}
+	
+	
+	//@Test
+	public void testDeleteNote() throws UnAuthorizedException, NoteNotFoundException, LabelNotFoundException, ReminderDateNotValidException, UserNotFoundException{
+		String noteId="5b5b00c24b47f82fb1547809";
+		String userId="5b5014124b47f81fbe60ce52";
+		Optional<Note> note=noteRespository.findByNoteId(noteId);
+		boolean isTrashed=note.get().isTrashed();
+		//doNothing().when(noteService.trashNote(userId, noteId));
+		//assertEquals(noteService.trashNote(userId, noteId),isTrashed);
+		// verify(noteService.trashNote(userId, noteId)).
+
+	}
+	
 }
 
 

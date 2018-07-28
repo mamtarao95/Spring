@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class NoteDTO {
-	private String noteId;
+	private String noteId; // make it id
 	private String title;
 	private String description;
 	private Date createdAt;

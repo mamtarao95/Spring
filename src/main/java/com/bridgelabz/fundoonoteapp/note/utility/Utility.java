@@ -33,8 +33,8 @@ public class Utility {
 	}
 
 	public static void validateCreateDTO(CreateNoteDTO createNoteDTO) throws NoteNotFoundException {
-		if (createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle().equals("")
-				|| createNoteDTO.getDescription() == null && createNoteDTO.getTitle() == null) {
+		if (createNoteDTO.getDescription() == null && createNoteDTO.getTitle() == null || createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle().equals("")
+				) {
 			throw new NoteNotFoundException("Fields cannot be empty");
 		}
 		if (createNoteDTO.getDescription().equals("") && createNoteDTO.getTitle() == null

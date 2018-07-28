@@ -15,7 +15,7 @@ import com.bridgelabz.fundoonoteapp.note.models.Note;
 public interface NoteRespository extends MongoRepository<Note, String>{
 	Optional<Note> findByNoteId(String noteId);
 
-	Note findByUserIdAndNoteId(String UserId, String noteId);
+	Optional<Note> findByUserIdAndNoteId(String userId, String noteId);
 
 	Long deleteNoteByIsTrashed(boolean trashed);
 

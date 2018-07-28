@@ -25,7 +25,7 @@ public class NoteExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Response> genericExceptionhandler(HttpServletRequest request, Exception exception) {
-		logger.info("Generic Exception Occured: URL=" + request.getRequestURL());
+		logger.info("Generic Exception Occured: URL=" + request.getRequestURL(), exception);
 		Response response = new Response();
 		response.setMessage(exception.getMessage());
 		response.setStatus(-1);
