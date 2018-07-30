@@ -1,4 +1,4 @@
-package com.bridgelabz.fundooNoteApp.Test;
+/*package com.bridgelabz.fundooNoteApp.Test;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,25 +17,15 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-
 import com.bridgelabz.fundoonoteapp.FundooNoteApplication;
 import com.bridgelabz.fundoonoteapp.note.controllers.NoteController;
 import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
@@ -49,7 +39,6 @@ import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
 import com.bridgelabz.fundoonoteapp.note.repositories.NoteRespository;
 import com.bridgelabz.fundoonoteapp.note.services.NoteServiceImpl;
-import com.bridgelabz.fundoonoteapp.user.models.Response;
 import com.bridgelabz.fundoonoteapp.user.repositories.UserRepository;
 
 
@@ -81,11 +70,12 @@ public class NoteApplicationTest {
 	public void init() {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(noteController).build();
 	}
+    @Autowired
+    private JacksonTester < CreateNoteDTO > json;
 	
-	
-	//@Test
+	@Test
 		public void createNoteTest() throws Exception {
-			mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/createnote").contentType(MediaType.APPLICATION_JSON)
+			mockMvc.perform(MockMvcRequestBuilders.post("/note/create").contentType(MediaType.APPLICATION_JSON)
 					
 					.content("{\"description\" : \"notedescription\", \"title\" : \"title\",\"color\" : \"white\",\"reminder\" : \"2018-07-21T10:02:43.210Z\",\"isPin\" : \"false\",\"isArchive\" : \"false\"}")
 					.requestAttr("userId", "5b5014124b47f81fbe60ce52")
@@ -167,4 +157,4 @@ public class NoteApplicationTest {
 	
 }
 
-
+*/

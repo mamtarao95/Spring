@@ -51,7 +51,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
-<!-- https://mvnrepository.com/artifact/org.apache.commons/com.springsource.org.apache.commons.logging -->
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/com.springsource.org.apache.commons.logging -->
 
 
 		<dependency>
@@ -84,41 +84,44 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/com.springsource.org.apache.commons.collections -->
-		
 
-
-		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>2.0.1.RELEASE</version>
-		</dependency>
-	</dependencies>
-	<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-elasticsearch</artifactId> 
-		</dependency> -->
-	<build>
-		<plugins>
-			<plugin>
+			 <dependency>
 				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+				<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+			</dependency>  
+
+			<dependency>
+				<groupId>org.modelmapper</groupId>
+				<artifactId>modelmapper</artifactId>
+				<version>2.1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>2.7.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>2.7.0</version>
+			</dependency>
+		  <dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-elasticsearch</artifactId>
+			
+			</dependency>  
+		</dependencies>
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-elasticsearch</artifactId> 
+			</dependency> -->
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+			</plugins>
+		</build>
 
 
 </project>

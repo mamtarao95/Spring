@@ -1,16 +1,19 @@
 package com.bridgelabz.fundoonoteapp.note.models;
 
+import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "note")
+@Document(indexName = "noteelasticsearch", type = "note")
+//@Document(collection = "note")
+//@org.springframework.data.elasticsearch.annotations.Document(indexName = "noteelasticsearch")
+//@org.springframework.data.mongodb.core.mapping.Document(collection = "note")
 public class Note {
 
 	@Id
-	private String noteId;
+	private String id;
 	private String userId;
 	private String title;
 	private String description;
@@ -24,11 +27,11 @@ public class Note {
 	private List<LabelDTO> labels;
 
 	public String getNoteId() {
-		return noteId;
+		return id;
 	}
 
 	public void setNoteId(String noteId) {
-		this.noteId = noteId;
+		this.id = noteId;
 	}
 
 	public String getUserId() {

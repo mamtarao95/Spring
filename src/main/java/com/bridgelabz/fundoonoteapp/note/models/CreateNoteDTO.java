@@ -19,14 +19,14 @@ public class CreateNoteDTO {
 
 	private boolean isArchive;
 
-	private List<String> labelNameList;
+	private List<String> labelNames;
 
 	public List<String> getLabelNameList() {
-		return labelNameList;
+		return labelNames;
 	}
 
 	public void setLabelNameList(List<String> labelNameList) {
-		this.labelNameList = labelNameList;
+		this.labelNames = labelNameList;
 	}
 
 	public boolean isPin() {

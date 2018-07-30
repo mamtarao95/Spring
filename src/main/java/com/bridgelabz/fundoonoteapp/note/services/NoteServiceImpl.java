@@ -2,13 +2,12 @@ package com.bridgelabz.fundoonoteapp.note.services;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,7 @@ import com.bridgelabz.fundoonoteapp.note.models.LabelDTO;
 import com.bridgelabz.fundoonoteapp.note.models.Note;
 import com.bridgelabz.fundoonoteapp.note.models.UpdateNoteDTO;
 import com.bridgelabz.fundoonoteapp.note.models.NoteDTO;
+import com.bridgelabz.fundoonoteapp.note.repositories.ElasticSearchRepositoryCustom;
 import com.bridgelabz.fundoonoteapp.note.repositories.LabelRepository;
 import com.bridgelabz.fundoonoteapp.note.repositories.NoteRespository;
 import com.bridgelabz.fundoonoteapp.note.utility.Utility;
@@ -35,6 +35,9 @@ public class NoteServiceImpl implements NoteService {
 
 	@Autowired
 	private NoteRespository noteRespository;
+
+	@Autowired
+	private ElasticSearchRepositoryCustom elasticSearchRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -107,8 +110,8 @@ public class NoteServiceImpl implements NoteService {
 		note.setUpdatedAt(date);
 		note.setUserId(userId);
 		note.setLabels(newlabelList);
-		Note optionalNote = noteRespository.save(note);
-
+		Note optionalNote = elasticSearchRepository.save(note);
+		noteRespository.save(note);
 		return mapModels(optionalNote); // change to convertor
 
 	}
@@ -120,6 +123,7 @@ public class NoteServiceImpl implements NoteService {
 		Note note = optionalNote.get();
 		note.setTrashed(true);
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 	}
 
 	@Override
@@ -135,6 +139,7 @@ public class NoteServiceImpl implements NoteService {
 		}
 		note.setUpdatedAt(new Date());
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 	}
 
 	@Override
@@ -151,6 +156,7 @@ public class NoteServiceImpl implements NoteService {
 			Note note = optionalNote.get();
 			note.setTrashed(false);
 			noteRespository.save(note);
+			elasticSearchRepository.save(note);
 		}
 
 	}
@@ -161,6 +167,7 @@ public class NoteServiceImpl implements NoteService {
 			throw new UnAuthorizedException(env.getProperty("UserNotFound"));
 		}
 		noteRespository.deleteNoteByIsTrashedAndUserId(true, userId);
+		elasticSearchRepository.deleteNoteByIsTrashedAndUserId(true, userId);
 	}
 
 	@Override
@@ -173,6 +180,7 @@ public class NoteServiceImpl implements NoteService {
 		Note note = optionalNote.get();
 		note.setReminder(reminder);
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 	}
 
 	@Override
@@ -184,6 +192,7 @@ public class NoteServiceImpl implements NoteService {
 		Note note = optionalNote.get();
 		note.setReminder(null);
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 
 	}
 
@@ -199,7 +208,7 @@ public class NoteServiceImpl implements NoteService {
 
 	@Override
 	public List<NoteDTO> viewAllNotes(String userId) throws NoteNotFoundException {
-		List<Note> note = noteRespository.findAllByUserIdAndIsTrashed(userId, false);
+		List<Note> note = elasticSearchRepository.findAllByUserIdAndIsTrashedFalse(userId);
 		if (note.isEmpty()) {
 			throw new NoteNotFoundException(env.getProperty("NoNotesPresent"));
 		}
@@ -221,9 +230,9 @@ public class NoteServiceImpl implements NoteService {
 		return merged;
 	}
 
-	@Override
+	/*@Override
 	public Iterable<NoteDTO> viewAllTrashedNotes(String userId) throws NoteNotTrashedException {
-		List<Note> note = noteRespository.findAllByUserIdAndIsTrashed(userId, true);
+		//List<Note> note = elasticSearchRepository.findAllByUserIdAndIsTrashedFalse(userId, true);
 		if (note.isEmpty()) {
 			throw new NoteNotTrashedException(env.getProperty("NoteNotTrashed"));
 		}
@@ -232,11 +241,11 @@ public class NoteServiceImpl implements NoteService {
 			noteList.add(modelMapper.map(note.get(i), NoteDTO.class));
 		}
 		return noteList;
-	}
+	}*/
 
 	@Override
 	public Iterable<NoteDTO> getArchiveNotes(String userId) throws NoteNotFoundException {
-		List<Note> note = noteRespository.findAllByUserIdAndIsArchive(userId, true);
+		List<Note> note = elasticSearchRepository.findAllByUserIdAndIsArchive(userId, true);
 		if (note.isEmpty()) {
 			throw new NoteNotFoundException(env.getProperty("NoteNotFound"));
 		}
@@ -256,6 +265,7 @@ public class NoteServiceImpl implements NoteService {
 		note.setPin(false);
 		note.setArchive(true);
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 
 	}
 
@@ -266,6 +276,7 @@ public class NoteServiceImpl implements NoteService {
 		Note note = optionalNote.get();
 		note.setArchive(false);
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 	}
 
 	@Override
@@ -281,6 +292,7 @@ public class NoteServiceImpl implements NoteService {
 			note.setPin(false);
 		}
 		noteRespository.save(note);
+		elasticSearchRepository.save(note);
 	}
 
 	@Override
@@ -297,7 +309,8 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public LabelDTO createLabel(String labelName, String userId) throws UnAuthorizedException, LabelNotFoundException, LabelNameAlreadyUsedException {
+	public LabelDTO createLabel(String labelName, String userId)
+			throws UnAuthorizedException, LabelNotFoundException, LabelNameAlreadyUsedException {
 		if (!userRepository.findById(userId).isPresent()) {
 			throw new UnAuthorizedException(env.getProperty("UserNotFound"));
 		}
@@ -465,7 +478,7 @@ public class NoteServiceImpl implements NoteService {
 		if (!userRepository.findById(userId).isPresent()) {
 			throw new UserNotFoundException(env.getProperty("UserNotFound"));
 		}
-		Optional<Note> optionalNote = noteRespository.findByNoteId(noteId);
+		Optional<Note> optionalNote = noteRespository.findById(noteId);
 
 		if (!optionalNote.isPresent()) {
 			throw new NoteNotFoundException(env.getProperty("NoteNotFound"));
@@ -486,6 +499,12 @@ public class NoteServiceImpl implements NoteService {
 			throw new LabelNotFoundException(env.getProperty("LabelNotFound"));
 		}
 		return labelFound;
+	}
+
+	@Override
+	public Iterable<NoteDTO> viewAllTrashedNotes(String userId) throws NoteNotFoundException, NoteNotTrashedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
