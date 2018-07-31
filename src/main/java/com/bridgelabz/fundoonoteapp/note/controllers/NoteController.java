@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoonoteapp.note.exceptions.LabelNotFoundException;
 import com.bridgelabz.fundoonoteapp.note.exceptions.NoteNotFoundException;
@@ -50,7 +51,7 @@ public class NoteController {
 			UnAuthorizedException, LabelNotFoundException, ReminderDateNotValidException, UserNotFoundException {
 		
 		NoteDTO note = noteService.createNote(createNoteDTO, userId);
-		
+	
 		return new ResponseEntity<>(note, HttpStatus.CREATED);
 	}
 
@@ -320,6 +321,29 @@ public class NoteController {
 	}
 
 
+	/**
+	 * @param color
+	 * @param noteId
+	 * @param userId
+	 * @return
+	 * @throws UserNotFoundException
+	 * @throws LabelNotFoundException
+	 * @throws NoteNotFoundException
+	 * @throws UnAuthorizedException
+	 */
+	@PutMapping("/changecolour/{noteId}") 
+	public ResponseEntity<Response> changeColour(@RequestParam String color, @PathVariable String noteId,
+			@RequestHeader("userId") String userId)
+			throws UserNotFoundException, NoteNotFoundException, UnAuthorizedException {
 
+		noteService.changeColour(noteId, userId, color);
+
+		Response responseDTO = new Response();
+		responseDTO.setMessage("Color changed Successfully!!");
+		responseDTO.setStatus(14);
+
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+	}
 	
 }

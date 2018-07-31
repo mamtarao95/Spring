@@ -155,30 +155,7 @@ public class LabelController {
 
 	}
 
-	/**
-	 * @param color
-	 * @param noteId
-	 * @param userId
-	 * @return
-	 * @throws UserNotFoundException
-	 * @throws LabelNotFoundException
-	 * @throws NoteNotFoundException
-	 * @throws UnAuthorizedException
-	 */
-	@PutMapping("/changecolour/{noteId}") 
-	public ResponseEntity<Response> changeColour(@RequestParam String color, @PathVariable String noteId,
-			@RequestHeader("userId") String userId)
-			throws UserNotFoundException, NoteNotFoundException, UnAuthorizedException {
-
-		noteService.changeColour(noteId, userId, color);
-
-		Response responseDTO = new Response();
-		responseDTO.setMessage("Color changed Successfully!!");
-		responseDTO.setStatus(14);
-
-		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-
-	}
+	
 
 	/**
 	 * @param labelId
